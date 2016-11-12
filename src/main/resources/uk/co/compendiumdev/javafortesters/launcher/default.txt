@@ -1,0 +1,4 @@
+java_for_testers = http://www.javafortesters.com
+eviltester = http://www.eviltester.com
+Selenium_Simplified = http://www.seleniumsimplified.com
+Compendium_Developments = https://www.compendiumdev.co.uk
