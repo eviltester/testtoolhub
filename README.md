@@ -20,7 +20,7 @@ https://en.wikipedia.org/wiki/MIT_License
 
 Type in the `Length:` of counterstring.
 
-Defaults to `"*"` as the counterstring delimter but you can change this to whatever you want.
+Defaults to `"*"` as the counterstring delimiter but you can change this to whatever you want.
  
 and press:
 
@@ -35,7 +35,7 @@ This uses a 'forward' counter string generation algorithm so it is able to gener
 
 Reverse counterstring algorithms need as much memory as the string and then room to reverse it, so for long strings this can be a lot.
 
-Clearly for clipoard, we have to generate, then add to clipboard.
+Clearly for clipboard, we have to generate, then add to clipboard.
 
 So this only adds value for the 'Robot' at the moment.
 
@@ -121,7 +121,7 @@ Compendium_Developments = https://www.compendiumdev.co.uk
     
 ## Release Notes
       
-### 11/12/2016
+### 20161112
          
 - started using this in videos for youtube, so other people saw it
 - people asked how to get hold of it
@@ -129,7 +129,7 @@ Compendium_Developments = https://www.compendiumdev.co.uk
 - wrote readme.md to explain a bit
 - getting ready to release to github
 
-### prior to 11/12/2016
+### prior to 20161112
 
 - private source managed on xp-dev.com for Alan Richardson use only
 - originally created as a set of coding exercises and experimentation with Java FX
