@@ -10,7 +10,7 @@ import org.junit.Test;
 public class CreateBinaryChopifierTest {
 
 
-    /*     iniital notes
+    /*     inital notes
     Tool idea: binary chopper!
     start: 1024 end: 2048
     result
@@ -29,165 +29,113 @@ public class CreateBinaryChopifierTest {
         10: 2047 (1)
         11: 2048 (0)
 
-- given a start and end output a list of value for the binary chop to std out
-- calculate values and
 
 */
 
 
     @Test
-    public void calculateBinaryChopForStartAndEndFromThoughtAlgorithm(){
-
-        int start = 1024;
-        int end = 2048;
-        int choppoint=start;
-        int inc = start;
-
-        while(inc > 0){
-            inc = (end-choppoint)/2;
-            choppoint=choppoint+inc;
-            System.out.println(String.format("%d (%d)", choppoint, inc));
-        }
-
-    }
-
-    /* above results show it is the wrong algorithm */
-
-    @Test
-    public void calculateBinaryChopForStartAndEnd(){
-
-        int start = 1024;
-        int end = 2048;
-        int choppoint=start;
-        int diff = start;
-
-        while(diff > 0){
-
-            diff = (end-choppoint)/2;
-            choppoint=end-diff;
-            System.out.println(String.format("%d (%d)", choppoint, diff));
-        }
-
-    }
-
-    /* above is better algorithm, but with this new algorithm I don't really need the choppoint */
-
-    @Test
-    public void calculateBinaryChopForStartAndEndHalfDifference(){
-
-        int start = 1024;
-        int end = 2048;
-        int diff = end-start;
-
-        while(diff > 0){
-            diff = diff/2;
-            System.out.println(String.format("%d (%d)", end-diff, diff));
-        }
-    }
-
-    /* above has choppoint removed */
-
-
-    @Test
-    public void binaryChop_1024_to_2048(){
+    public void binaryChop_1024_to_2048() {
 
         BinaryChopifier binaryChopper = new BinaryChopifier();
         BinaryChopResults binaryChop = binaryChopper.chop(1024, 2048);
 
-        Assert.assertEquals(binaryChop.getStart(), 1024);
-        Assert.assertEquals(binaryChop.getEnd(), 2048);
+        Assert.assertEquals(1024, binaryChop.getStart());
+        Assert.assertEquals(2048, binaryChop.getEnd());
 
-        Assert.assertEquals(binaryChop.countChopPoints(), 11);
+        Assert.assertEquals(11, binaryChop.countChopPoints());
 
-        Assert.assertEquals(binaryChop.getChopPoint(1), 1536);
-        Assert.assertEquals(binaryChop.getChopPoint(2), 1792);
-        Assert.assertEquals(binaryChop.getChopPoint(3), 1920);
-        Assert.assertEquals(binaryChop.getChopPoint(4), 1984);
-        Assert.assertEquals(binaryChop.getChopPoint(5), 2016);
-        Assert.assertEquals(binaryChop.getChopPoint(6), 2032);
-        Assert.assertEquals(binaryChop.getChopPoint(7), 2040);
-        Assert.assertEquals(binaryChop.getChopPoint(8), 2044);
-        Assert.assertEquals(binaryChop.getChopPoint(9), 2046);
-        Assert.assertEquals(binaryChop.getChopPoint(10), 2047);
-        Assert.assertEquals(binaryChop.getChopPoint(11), 2048);
+        Assert.assertEquals(1536, binaryChop.getChopPoint(1));
+        Assert.assertEquals(1792, binaryChop.getChopPoint(2));
+        Assert.assertEquals(1920, binaryChop.getChopPoint(3));
+        Assert.assertEquals(1984, binaryChop.getChopPoint(4));
+        Assert.assertEquals(2016, binaryChop.getChopPoint(5));
+        Assert.assertEquals(2032, binaryChop.getChopPoint(6));
+        Assert.assertEquals(2040, binaryChop.getChopPoint(7));
+        Assert.assertEquals(2044, binaryChop.getChopPoint(8));
+        Assert.assertEquals(2046, binaryChop.getChopPoint(9));
+        Assert.assertEquals(2047, binaryChop.getChopPoint(10));
+        Assert.assertEquals(2048, binaryChop.getChopPoint(11));
 
-        Assert.assertEquals(binaryChop.getChopPointDiff(1), 512);
-        Assert.assertEquals(binaryChop.getChopPointDiff(2), 256);
-        Assert.assertEquals(binaryChop.getChopPointDiff(3), 128);
-        Assert.assertEquals(binaryChop.getChopPointDiff(4), 64);
-        Assert.assertEquals(binaryChop.getChopPointDiff(5), 32);
-        Assert.assertEquals(binaryChop.getChopPointDiff(6), 16);
-        Assert.assertEquals(binaryChop.getChopPointDiff(7), 8);
-        Assert.assertEquals(binaryChop.getChopPointDiff(8), 4);
-        Assert.assertEquals(binaryChop.getChopPointDiff(9), 2);
-        Assert.assertEquals(binaryChop.getChopPointDiff(10), 1);
-        Assert.assertEquals(binaryChop.getChopPointDiff(11), 0);
+        Assert.assertEquals(512, binaryChop.getChopPointDiff(1));
+        Assert.assertEquals(256, binaryChop.getChopPointDiff(2));
+        Assert.assertEquals(128, binaryChop.getChopPointDiff(3));
+        Assert.assertEquals(64, binaryChop.getChopPointDiff(4));
+        Assert.assertEquals(32, binaryChop.getChopPointDiff(5));
+        Assert.assertEquals(16, binaryChop.getChopPointDiff(6));
+        Assert.assertEquals(8, binaryChop.getChopPointDiff(7));
+        Assert.assertEquals(4, binaryChop.getChopPointDiff(8));
+        Assert.assertEquals(2, binaryChop.getChopPointDiff(9));
+        Assert.assertEquals(1, binaryChop.getChopPointDiff(10));
+        Assert.assertEquals(0, binaryChop.getChopPointDiff(11));
     }
 
 
     @Test
-    public void binaryChopEndValueOnly(){
+    public void binaryChopEndValueOnly() {
 
         BinaryChopifier binaryChopper = new BinaryChopifier();
         BinaryChopResults binaryChop = binaryChopper.chop(2048);
 
-        Assert.assertEquals(binaryChop.getStart(), 1024);
-        Assert.assertEquals(binaryChop.getEnd(), 2048);
+        Assert.assertEquals(1024, binaryChop.getStart());
+        Assert.assertEquals(2048, binaryChop.getEnd());
 
-        Assert.assertEquals(binaryChop.countChopPoints(), 11);
+        Assert.assertEquals(11, binaryChop.countChopPoints());
 
-        Assert.assertEquals(binaryChop.getChopPoint(1), 1536);
-        Assert.assertEquals(binaryChop.getChopPoint(11), 2048);
+        Assert.assertEquals(1536, binaryChop.getChopPoint(1));
+        Assert.assertEquals(2048, binaryChop.getChopPoint(11));
+
+        Assert.assertEquals(512, binaryChop.getChopPointDiff(1));
+        Assert.assertEquals(0, binaryChop.getChopPointDiff(11));
     }
 
 
     @Test
-    public void binaryChop128(){
+    public void binaryChop128() {
 
         BinaryChopifier binaryChopper = new BinaryChopifier();
         BinaryChopResults binaryChop = binaryChopper.chop(128);
 
-        Assert.assertEquals(binaryChop.getStart(), 64);
-        Assert.assertEquals(binaryChop.getEnd(), 128);
+        Assert.assertEquals(64, binaryChop.getStart());
+        Assert.assertEquals(128, binaryChop.getEnd());
 
         Assert.assertEquals(binaryChop.countChopPoints(), 7);
 
         int[] expectedValues = {96, 112, 120, 124, 126, 127, 128};
         int[] diffValues = {32, 16, 8, 4, 2, 1, 0};
 
-        for(int x=1; x <= binaryChop.countChopPoints(); x++){
+        for (int x = 1; x <= binaryChop.countChopPoints(); x++) {
             System.out.println(String.format("%d (%d)", binaryChop.getChopPoint(x), binaryChop.getChopPointDiff(x)));
-            Assert.assertEquals(binaryChop.getChopPoint(x), expectedValues[x-1]);
-            Assert.assertEquals(binaryChop.getChopPointDiff(x), diffValues[x-1]);
+            Assert.assertEquals(expectedValues[x - 1], binaryChop.getChopPoint(x));
+            Assert.assertEquals(diffValues[x - 1], binaryChop.getChopPointDiff(x));
         }
 
     }
 
     @Test
-    public void binaryChop57(){
+    public void binaryChop57() {
 
         BinaryChopifier binaryChopper = new BinaryChopifier();
         BinaryChopResults binaryChop = binaryChopper.chop(57);
 
-        Assert.assertEquals(binaryChop.getStart(), 28);
-        Assert.assertEquals(binaryChop.getEnd(), 57);
+        Assert.assertEquals(28, binaryChop.getStart());
+        Assert.assertEquals(57, binaryChop.getEnd());
 
         Assert.assertEquals(binaryChop.countChopPoints(), 5);
 
         int[] expectedValues = {43, 50, 54, 56, 57};
         int[] diffValues = {14, 7, 3, 1, 0};
 
-        for(int x=1; x <= binaryChop.countChopPoints(); x++){
+        for (int x = 1; x <= binaryChop.countChopPoints(); x++) {
             System.out.println(String.format("%d (%d)", binaryChop.getChopPoint(x), binaryChop.getChopPointDiff(x)));
-            Assert.assertEquals(binaryChop.getChopPoint(x), expectedValues[x-1]);
-            Assert.assertEquals(binaryChop.getChopPointDiff(x), diffValues[x-1]);
+            Assert.assertEquals(expectedValues[x - 1], binaryChop.getChopPoint(x));
+            Assert.assertEquals(diffValues[x - 1], binaryChop.getChopPointDiff(x));
         }
 
     }
 
 
     @Test
-    public void binaryChopReporter57(){
+    public void binaryChopReporter57() {
 
         BinaryChopifier binaryChopper = new BinaryChopifier();
         BinaryChopResults binaryChop = binaryChopper.chop(57);
@@ -210,8 +158,8 @@ public class CreateBinaryChopifierTest {
     }
 
     @Test
-    public void binaryChopTool(){
-        int endValue=2000;
+    public void binaryChopTool() {
+        int endValue = 2000;
         System.out.println(new BinaryChopReporter(new BinaryChopifier().chop(endValue)).getStringReport());
     }
 }
