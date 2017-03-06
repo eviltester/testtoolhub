@@ -92,6 +92,10 @@ public class MainGui extends Application{
         createString.setText("Strings");
         createString.setTooltip(new Tooltip("Create different Strings"));
 
+        Button robotTyper = new Button();
+        robotTyper.setText("Typer");
+        robotTyper.setTooltip(new Tooltip("Type Strings Using Robot"));
+
         Button cannedText = new Button();
         cannedText.setText("Canned Text Tree");
         cannedText.setTooltip(new Tooltip("Send Canned Text to the Clipboard"));
@@ -104,7 +108,7 @@ public class MainGui extends Application{
         htmlComments.setText("HTML Comments");
         htmlComments.setTooltip(new Tooltip("Find HTML Comments from a URL"));
 
-        buttonsRow1.getChildren().addAll(createCounter, createString);
+        buttonsRow1.getChildren().addAll(createCounter, createString); //, robotTyper);
         buttonsRow1.setSpacing(10);
 
         buttonsRow2.getChildren().addAll(cannedText, launcher, htmlComments);
@@ -136,6 +140,17 @@ public class MainGui extends Application{
                         StringGeneratorStage.singletonActivate();
                     }
                 });
+
+        // not yet ready for prime time
+        /*
+        robotTyper.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent e) {
+                        RobotTypeStage.singletonActivate();
+                    }
+                });
+        */
 
         cannedText.setOnAction(
                 new EventHandler<ActionEvent>() {
