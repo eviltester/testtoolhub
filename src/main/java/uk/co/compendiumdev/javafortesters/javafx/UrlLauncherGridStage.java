@@ -21,9 +21,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 
-/**
- * Created by alan on 12/03/15.
- */
 public class UrlLauncherGridStage  extends Stage {
 
     private static UrlLauncherGridStage urlLauncherGridSingletonStage=null;

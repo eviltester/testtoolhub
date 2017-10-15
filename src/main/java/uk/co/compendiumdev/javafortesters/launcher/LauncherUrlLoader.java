@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * Created by alan on 10/03/15.
- */
 public class LauncherUrlLoader {
 
     public UrlLauncher load() {

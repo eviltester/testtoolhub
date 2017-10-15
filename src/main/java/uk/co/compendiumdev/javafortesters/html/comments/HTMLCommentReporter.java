@@ -5,9 +5,7 @@ import org.apache.http.client.fluent.Request;
 
 import java.io.IOException;
 
-/**
- * Created by Alan on 24/03/2015.
- */
+
 public class HTMLCommentReporter {
 
     HTMLCommentFinder comments;

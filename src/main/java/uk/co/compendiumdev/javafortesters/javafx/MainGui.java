@@ -1,20 +1,24 @@
 package uk.co.compendiumdev.javafortesters.javafx;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 public class MainGui extends Application{
 
-    //TODO: Prompt "Are you sure?" when closing main form, then exit app if YES
+    //DONE: Prompt "Are you sure?" when closing main form, then exit app if YES
     //TODO: Repeat strings
     //DONE: counterstring generator
     //TODO: string generator to file
@@ -78,6 +82,10 @@ public class MainGui extends Application{
 
         BorderPane root = new BorderPane();
         Scene scene = new Scene(root, 400, 100);
+
+
+        stage.setOnCloseRequest(exitApplicationHandler());
+
 
         VBox buttonList = new VBox(10);
             HBox buttonsRow1 = new HBox();
@@ -175,6 +183,33 @@ public class MainGui extends Application{
                         HtmlCommentsGridStage.singletonActivate();
                     }
                 });
+    }
+
+    private EventHandler<WindowEvent> exitApplicationHandler() {
+        return new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirm Application Exit");
+                alert.setHeaderText("Are you sure you want to quit the application?");
+                alert.setContentText("Press OK to exit the application. Press Cancel to exit this dialog and keep the application running.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+
+
+                        CounterStringStage.stopServices();
+                        Platform.exit();
+                        System.exit(0);
+                    }else{
+                        event.consume();
+                    }
+                });
+
+
+            }
+        };
+
     }
 
     public static void main(String[] args) {

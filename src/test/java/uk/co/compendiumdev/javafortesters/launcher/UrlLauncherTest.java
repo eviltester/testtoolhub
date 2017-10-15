@@ -8,9 +8,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 
-/**
- * Created by alan on 09/03/15.
- */
+
 public class UrlLauncherTest {
 
     // Todo, need assertions and mocks etc. in these tests as url launching not tested by this

@@ -4,9 +4,6 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by alan on 10/03/15.
- */
 public class LauncherUrlSet {
     private static final int DEFAULT_MILLIS = 1000;
     private static final int DEFAULT_RETRIES = 3;

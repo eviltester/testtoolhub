@@ -23,9 +23,6 @@ import java.net.URISyntaxException;
 
 public class StringGeneratorStage extends Stage {
 
-
-    // TODO Warning STring generator can cause display errors, often best to go direct to clipboard
-
     private static StringGeneratorStage stringGeneratorSingletonStage=null;
 
     public static void singletonActivate() {
@@ -59,7 +56,7 @@ public class StringGeneratorStage extends Stage {
         HBox asciiControlCharToCharInputs = new HBox();
         final Label firstCharLbl = new Label("First Value:");
         final TextField firstCharTxt = new TextField ();
-        firstCharTxt.setText("0");
+        firstCharTxt.setText("1");
         final Label secondCharLbl = new Label("Second Value:");
         final TextField secondCharTxt = new TextField ();
         secondCharTxt.setText("255");
@@ -92,7 +89,7 @@ public class StringGeneratorStage extends Stage {
         asciiControlCharToCharInputs.setSpacing(10);
         asciiControlCharToCharButtons.setSpacing(10);
 
-        final Label warning = new Label("Warning: unicode values can cause rendering issues in this control");
+        final Label warning = new Label("Warning: unicode values can cause rendering issues in this control, and '0' will not render to clipboard");
 
         final Button clearTextArea = new Button();
         clearTextArea.setText("Clear");
@@ -131,7 +128,7 @@ public class StringGeneratorStage extends Stage {
                         }
                     }
                 });
-
+                                                                                                                          
         copyToClipboard.setOnAction(
                 new EventHandler<ActionEvent>() {
                     @Override
@@ -279,6 +276,7 @@ public class StringGeneratorStage extends Stage {
     private void sendToClipboard(String contents, Button copyCounter) {
         copyCounter.setText("Copying");
         Clipboard clipboard = Clipboard.getSystemClipboard();
+        clipboard.clear();
         ClipboardContent content = new ClipboardContent();
         content.putString(contents);
         clipboard.setContent(content);

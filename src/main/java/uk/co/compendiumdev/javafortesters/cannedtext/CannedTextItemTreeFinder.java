@@ -2,9 +2,7 @@ package uk.co.compendiumdev.javafortesters.cannedtext;
 
 import uk.co.compendiumdev.javafortesters.tree.TreeBranch;
 
-/**
- * Created by Alan on 27/02/2015.
- */
+
 public class CannedTextItemTreeFinder {
     private final TreeBranch<CannedTextItem> root;
 

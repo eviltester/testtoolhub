@@ -4,9 +4,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * Created by alan on 08/12/2014.
- */
 public class CounterstringCreationTest {
 
     @Test

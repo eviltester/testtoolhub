@@ -121,6 +121,15 @@ Compendium_Developments = https://www.compendiumdev.co.uk
     
 ## Release Notes
       
+### 20171015 15th October 2017
+
+- Amended Robot counterstring generator to not have a hanging thread that keeps going
+ - used service for JavaFx
+- click on 'Robot' button during counterstring generation while typing cancels the generation and typing
+- added handlers to prompt for application exit
+- added handlers to stop counterstring service when window hidden or application closes
+- Added - Y/N Exit App dialog
+      
 ### 20161112
          
 - started using this in videos for youtube, so other people saw it
