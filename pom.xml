@@ -7,8 +7,8 @@
     <groupId>uk.co.compendiumdev</groupId>
     <artifactId>testtoolhub</artifactId>
 	<!-- -SNAPSHOT -->
-    <!--<version>1.1-SNAPSHOT</version>-->
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
+    <!--<version>1.1</version>-->
 
     <dependencies>
         <dependency>
