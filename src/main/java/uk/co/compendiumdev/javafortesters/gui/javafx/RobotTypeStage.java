@@ -1,23 +1,16 @@
 package uk.co.compendiumdev.javafortesters.gui.javafx;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import uk.co.compendiumdev.javafortesters.gui.awtbridge.RobotTyper;
+import uk.co.compendiumdev.javafortesters.gui.javafx.robottasks.RobotTyperTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -33,7 +26,7 @@ import java.io.StringWriter;
 public class RobotTypeStage extends Stage {
 
     private static RobotTypeStage robotTypeStage =null;
-    private static Service task;
+    static RobotTyperTask robotTasker;
 
     public static void singletonActivate(){
 
@@ -54,11 +47,15 @@ public class RobotTypeStage extends Stage {
         milliPauseVal.setTooltip(new Tooltip("The time to wait between keypresses in milliseconds"));
         milliPauseVal.setText("500");
 
+        final Button configureRobotButton = new Button();
+        configureRobotButton.setText("Configure Robot");
+        configureRobotButton.setTooltip(new Tooltip("Configure Robot To use current typing settings"));
+
         final Button robotTypeButton = new Button();
         robotTypeButton.setText("Robot");
         robotTypeButton.setTooltip(new Tooltip("Have robot type string into field"));
 
-        robotTypeControl.getChildren().addAll(milliPauseLabel, milliPauseVal, robotTypeButton);
+        robotTypeControl.getChildren().addAll(milliPauseLabel, milliPauseVal, configureRobotButton, robotTypeButton);
         robotTypeControl.setSpacing(10);
 
         final TextArea textArea = new TextArea("");
@@ -77,141 +74,35 @@ public class RobotTypeStage extends Stage {
             this.show();
 
 
-        // when close stage, stop the counterstring generation
+        robotTasker = new RobotTyperTask(robotTypeButton);
+        robotTasker.configureRobot(Long.parseLong(milliPauseVal.getText()), textArea.getText());
+
+
+        // when close stage, stop the robot typing generation
         this.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<javafx.event.Event>() {
             @Override
             public void handle(Event event) {
-                if(task!=null) {
-                    if (task.isRunning()) {
-                        task.cancel();
-                        robotTypeButton.setText("Robot");
-                        robotTypeButton.setTooltip(new Tooltip("Have robot type string into field"));
-                    }
-                }
+                robotTasker.stopTheTask();
             }
         });
 
-        RobotTyper roboTyper = new RobotTyper();
 
-
-        //robot typing into field- never stop thread - once robot is used a thread ticks over in the background
-        // ready to be re-used
-        task = new Service<Void>() {
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        int x = 5;
-
-                        while (!isCancelled()) {
-                            if (robotTypeButton.getText().startsWith("Robot")) {
-                                x = 5;
-                            }
-                            final int finalX = x--;
-
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-
-
-                                    // This needs to be a state machine
-                                    // Robot means stop don't do anything
-                                    // Start means start counting down
-                                    // In [ means continue counting
-                                    // GO means calculate the counterstring
-                                    // ... means iterate through and send the keys
-                                    if (robotTypeButton.getText().startsWith("Start") || robotTypeButton.getText().startsWith("In [")) {
-                                        robotTypeButton.setText("In [" + finalX + "] secs");
-                                    }
-                                    if (finalX <= 0) {
-                                        robotTypeButton.setText("GO");
-                                        // calculate counterstring and iterator here
-
-                                        robotTypeButton.setText("...");
-                                    }
-                                    if (robotTypeButton.getText().startsWith("...")) {
-                                        if (roboTyper.hasAnotherCharToType()) {
-
-                                            String outputString = roboTyper.revealNextCharToType();
-                                            robotTypeButton.setText("..." + outputString);
-
-                                            roboTyper.typeNextChar();
-
-                                        } else {
-                                            // we are finished
-                                            robotTypeButton.setText("Robot");
-                                        }
-                                    }
-                                }
-
-                            });
-
-                            if (robotTypeButton.getText().startsWith("Robot") || robotTypeButton.getText().startsWith("In [")) {
-                                Thread.sleep(1000);
-                            } else {
-                                Thread.sleep(10);
-                                x = 5;
-                            }
-                            System.out.println("Thread " + x);
-                        }
-                        return null;
-                    }
-
-                };
-            }
-        };
-
-
-
-
-        robotTypeButton.setOnAction(
+        configureRobotButton.setOnAction(
                 new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
-
-                        System.out.println("clicked robot");
-
                         try {
-
-                            if(task.isRunning()){
-                                robotTypeButton.setText("Cancelling");
-                                task.cancel();
-                                robotTypeButton.setText("Robot");
-                                robotTypeButton.setTooltip(new Tooltip("Have robot start typing"));
-                                return;
-                            }
-
-                            if (robotTypeButton.getText().startsWith("Robot")) {
-
-                                if(!task.isRunning()){
-                                    task.reset();
-                                    roboTyper.setMilliseconds(Long.parseLong(milliPauseVal.getText()));
-                                    roboTyper.setTextToType(textArea.getText());
-                                    robotTypeButton.setText("Start");
-                                    robotTypeButton.setTooltip(new Tooltip("Click Button again to cancel Robot Typing"));
-                                    task.start();
-                                }
-
-
-                            } else {
-                                robotTypeButton.setText("Robot");
-                            }
-
-                        } catch (NumberFormatException ex) {
+                            robotTasker.configureRobot(Long.parseLong(milliPauseVal.getText()), textArea.getText());
+                        }
+                        catch(NumberFormatException ex){
                             alertLengthNotNumeric();
-                        } catch (Exception ex) {
+                        }catch(Exception ex){
                             alertException(ex);
                         }
                     }
                 });
 
-
     }
-
-
-
-
 
 
 
@@ -271,5 +162,11 @@ public class RobotTypeStage extends Stage {
         alert.showAndWait();
     }
 
+
+    public static void stopServices() {
+        if(robotTasker!=null){
+            robotTasker.stopTheTask();
+        }
+    }
 
 }

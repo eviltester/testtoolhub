@@ -1,16 +1,16 @@
-package uk.co.compendiumdev.javafortesters.gui.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx.robottasks;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import uk.co.compendiumdev.javafortesters.counterstrings.County;
 
-public class RobotTask extends AbstractRobotTask{
+public class CounterStringRobotTask extends AbstractRobotTask{
 
     private County county;
     private int counterLength;
     private String spacerText;
 
-    public RobotTask(Button buttonToControl) {
+    public CounterStringRobotTask(Button buttonToControl) {
 
         configureAbstractRobotTask(buttonToControl);
     }

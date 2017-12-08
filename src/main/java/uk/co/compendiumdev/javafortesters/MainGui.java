@@ -200,7 +200,10 @@ public class MainGui extends Application{
                     if (rs == ButtonType.OK) {
 
 
+                        // stop any stages that might have robots running
                         CounterStringStage.stopServices();
+                        RobotTypeStage.stopServices();
+
                         Platform.exit();
                         System.exit(0);
                     }else{

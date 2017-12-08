@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.gui.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx.robottasks;
 
 import javafx.application.Platform;
 import javafx.concurrent.Service;

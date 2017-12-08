@@ -2,7 +2,6 @@ package uk.co.compendiumdev.javafortesters.gui.javafx;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Service;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -16,6 +15,7 @@ import javafx.stage.WindowEvent;
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterString;
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterStringCreationError;
 import uk.co.compendiumdev.javafortesters.counterstrings.County;
+import uk.co.compendiumdev.javafortesters.gui.javafx.robottasks.CounterStringRobotTask;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,7 +24,7 @@ import java.io.StringWriter;
 public class CounterStringStage extends Stage {
 
     private static CounterStringStage counterStringSingletonStage=null;
-    private static Service task;
+    static CounterStringRobotTask robotTasker;
 
     public static void singletonActivate(){
 
@@ -109,7 +109,7 @@ public class CounterStringStage extends Stage {
             this.show();
 
 
-        final RobotTask robotTasker = new RobotTask(robotTypeButton);
+        robotTasker = new CounterStringRobotTask(robotTypeButton);
 
         County county = new County();
         int counterStringLength = Integer.parseInt(counterLength.getText());
@@ -302,12 +302,8 @@ public class CounterStringStage extends Stage {
 
 
     public static void stopServices() {
-        if(task!=null){
-            if(task.isRunning()){
-                task.cancel();
-                task=null;
-            }
+        if(robotTasker!=null){
+            robotTasker.stopTheTask();
         }
-
     }
 }
