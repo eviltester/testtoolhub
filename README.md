@@ -40,6 +40,20 @@ Clearly for clipboard, we have to generate, then add to clipboard.
 So this only adds value for the 'Robot' at the moment.
 
 
+## Robot Typer
+
+Given a set of text in the memo field.
+
+Robot Typer will attempt to type it into whatever field you put the cursor in.
+
+Just like the counterstring robot you have 5 seconds countdown to put your cursor in the correct place.
+
+Then typing starts.
+
+Press [Robot] button, or close the dialog to stop any typing currently taking place.
+
+- Not all characters can be typed.
+- Currently the Shift mappings are hard coded and might not match your keyboard layout.
 
 ## Strings
 
@@ -111,6 +125,9 @@ Compendium_Developments = https://www.compendiumdev.co.uk
 - Launch URLs TODO:
     - config browser
     
+- Robot Typer:
+    - configurable override of shift characters
+    - tracking the exceptions and report which chars not typed
     
 - General
     - split out data generation into libraries as maven includes
@@ -120,6 +137,16 @@ Compendium_Developments = https://www.compendiumdev.co.uk
     
     
 ## Release Notes
+      
+### 20171208 8th December 2017 - version 1.2
+
+- Reinstated the Robot Typer
+- Robot Typer now handles more characters
+- All chars may not work on every machine as mapped to my machine
+- currently no way to override the shift character mappings
+- Robot typer uses same threading model as counterstring
+- currently only see typing exceptions if run as `java -jar ...`
+
       
 ### 20171015 15th October 2017
 
