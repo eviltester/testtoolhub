@@ -16,12 +16,6 @@ public class UrlLauncher {
         this.urlSets.put(urlSet.getName(), urlSet);
     }
 
-    public void launch() {
-        for(Map.Entry<String, LauncherUrlSet> url : urlSets.entrySet()){
-            url.getValue().launch();
-        }
-    }
-
     public Set<String> getSetNames(){
         return urlSets.keySet();
     }

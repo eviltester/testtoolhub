@@ -60,7 +60,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>uk.co.compendiumdev.javafortesters.javafx.MainGui</mainClass>
+                            <mainClass>uk.co.compendiumdev.javafortesters.MainGui</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

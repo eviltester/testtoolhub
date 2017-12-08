@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

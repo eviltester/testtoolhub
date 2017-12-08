@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LauncherUrlSet {
-    private static final int DEFAULT_MILLIS = 1000;
-    private static final int DEFAULT_RETRIES = 3;
+    public static final int DEFAULT_MILLIS = 1000;
+    public static final int DEFAULT_RETRIES = 3;
     private String name;
     private Map<String, LauncherUrl> urls;
 
@@ -19,34 +19,7 @@ public class LauncherUrlSet {
         urls.put(aUrl.getName(), aUrl);
     }
 
-    public void launch(){
-        launch(DEFAULT_MILLIS, DEFAULT_RETRIES);
-    }
 
-    public void launch(int millisBetweenLaunches, int retries) {
-        if(Desktop.isDesktopSupported()){
-            for( Map.Entry<String, LauncherUrl> aUrl : this.urls.entrySet()){
-
-                for(int tries=0; tries<retries; tries++){
-
-                    System.out.println("Opening " + aUrl.getKey());
-                    boolean opened = aUrl.getValue().launch();
-
-                    try {
-                        Thread.sleep(millisBetweenLaunches);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    if(opened){
-                        break;
-                    }
-                }
-            }
-        }else{
-            System.out.println("Cannot launch, desktop launching not supported by JVM");
-        }
-    }
 
     public String getName() {
         return name;

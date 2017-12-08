@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx;
 
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterString;
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterStringRangeListIterator;

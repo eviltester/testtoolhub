@@ -1,24 +1,24 @@
-package uk.co.compendiumdev.javafortesters.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx;
 
-import uk.co.compendiumdev.javafortesters.launcher.LauncherUrl;
-import uk.co.compendiumdev.javafortesters.launcher.LauncherUrlLoader;
-import uk.co.compendiumdev.javafortesters.launcher.LauncherUrlSet;
-import uk.co.compendiumdev.javafortesters.launcher.UrlLauncher;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import uk.co.compendiumdev.javafortesters.gui.urllauncher.PhysicalUrlLauncher;
+import uk.co.compendiumdev.javafortesters.launcher.LauncherUrl;
+import uk.co.compendiumdev.javafortesters.launcher.LauncherUrlLoader;
+import uk.co.compendiumdev.javafortesters.launcher.LauncherUrlSet;
+import uk.co.compendiumdev.javafortesters.launcher.UrlLauncher;
 
 
 public class UrlLauncherGridStage  extends Stage {
@@ -81,7 +81,7 @@ public class UrlLauncherGridStage  extends Stage {
                     public void handle(MouseEvent event) {
                         if (event.getClickCount() > 1) {
                             LauncherUrlSet rowData = (LauncherUrlSet)cell.getTableRow().getItem();
-                            rowData.launch();
+                            PhysicalUrlLauncher.launch(rowData);
                         }else {
                             // if click count = 1 then set the data on the right hand side of the grid
                             urlsList.clear();
@@ -128,7 +128,7 @@ public class UrlLauncherGridStage  extends Stage {
                     public void handle(MouseEvent event) {
                         if (event.getClickCount() > 1) {
                             LauncherUrl rowData = (LauncherUrl) cell.getTableRow().getItem();
-                            rowData.launch();
+                            PhysicalUrlLauncher.launch(rowData.getUrl());
                         }
                     }
                 });

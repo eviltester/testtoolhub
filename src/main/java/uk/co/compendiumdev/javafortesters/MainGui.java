@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.javafx;
+package uk.co.compendiumdev.javafortesters;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import uk.co.compendiumdev.javafortesters.gui.javafx.*;
 
 
 public class MainGui extends Application{

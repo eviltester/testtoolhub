@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx;
 
 
 public class Config {

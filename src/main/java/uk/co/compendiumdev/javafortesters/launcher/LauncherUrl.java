@@ -25,18 +25,5 @@ public class LauncherUrl {
         return url;
     }
 
-    public boolean launch() {
 
-        if(!Desktop.isDesktopSupported()) return false;
-
-        try {
-            Desktop.getDesktop().browse(new URI(this.url));
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }

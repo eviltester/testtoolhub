@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
