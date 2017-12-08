@@ -17,8 +17,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterString;
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterStringCreationError;
+import uk.co.compendiumdev.javafortesters.counterstrings.County;
+import uk.co.compendiumdev.javafortesters.gui.awtbridge.RobotTyper;
 
-import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -82,11 +83,11 @@ public class CounterStringStage extends Stage {
         clearTextArea.setTooltip(new Tooltip("Clear the text from the text area"));
 
 
-        final Button robotType = new Button();
-        robotType.setText("Robot");
-        robotType.setTooltip(new Tooltip("Have robot type counterstring into field"));
+        final Button robotTypeButton = new Button();
+        robotTypeButton.setText("Robot");
+        robotTypeButton.setTooltip(new Tooltip("Have robot type counterstring into field"));
 
-        lengthControl.getChildren().addAll(lenCounter, lengthCount, clearTextArea, robotType);
+        lengthControl.getChildren().addAll(lenCounter, lengthCount, clearTextArea, robotTypeButton);
         lengthControl.setSpacing(10);
 
 
@@ -115,8 +116,8 @@ public class CounterStringStage extends Stage {
                 if(task!=null) {
                     if (task.isRunning()) {
                         task.cancel();
-                        robotType.setText("Robot");
-                        robotType.setTooltip(new Tooltip("Have robot type counterstring into field"));
+                        robotTypeButton.setText("Robot");
+                        robotTypeButton.setTooltip(new Tooltip("Have robot type counterstring into field"));
                     }
                 }
             }
@@ -129,8 +130,8 @@ public class CounterStringStage extends Stage {
 //                if(task!=null) {
 //                    if (task.isRunning()) {
 //                        task.cancel();
-//                        robotType.setText("Robot");
-//                        robotType.setTooltip(new Tooltip("Have robot type counterstring into field"));
+//                        robotTypeButton.setText("Robot");
+//                        robotTypeButton.setTooltip(new Tooltip("Have robot type counterstring into field"));
 //                    }
 //                }
 //            }
@@ -138,6 +139,7 @@ public class CounterStringStage extends Stage {
 
 
         County county = new County();
+        RobotTyper typer = new RobotTyper();
 
 
         //robot typing into field- never stop thread - once robot is used a thread ticks over in the background
@@ -151,7 +153,7 @@ public class CounterStringStage extends Stage {
                         int x=5;
 
                         while(!isCancelled()) {
-                            if(robotType.getText().startsWith("Robot")){
+                            if(robotTypeButton.getText().startsWith("Robot")){
                                 x=5;
                             }
                             final int finalX = x--;
@@ -168,40 +170,34 @@ public class CounterStringStage extends Stage {
                                     // In [ means continue counting
                                     // GO means calculate the counterstring
                                     // ... means iterate through and send the keys
-                                    if (robotType.getText().startsWith("Start") || robotType.getText().startsWith("In [")) {
-                                        robotType.setText("In [" + finalX + "] secs");
+                                    if (robotTypeButton.getText().startsWith("Start") || robotTypeButton.getText().startsWith("In [")) {
+                                        robotTypeButton.setText("In [" + finalX + "] secs");
                                     }
                                     if (finalX <= 0) {
-                                        robotType.setText("GO");
+                                        robotTypeButton.setText("GO");
                                         // calculate counterstring and iterator here
 
-                                        robotType.setText("...");
+                                        robotTypeButton.setText("...");
                                     }
-                                    if(robotType.getText().startsWith("...")){
+                                    if(robotTypeButton.getText().startsWith("...")){
                                         if(county.hasAnotherValueInRangeList()){
                                             String outputString = county.getNextCounterStringEntry();
-                                            robotType.setText("..."+outputString);
-                                            //System.out.println(outputString);
-                                            for(char c : outputString.toCharArray()) {
-                                                //System.out.println(""+c);
-                                                // this hack means that with robot we should really default to *
-                                                if(c=='*'){
-                                                    county.getRobot().keyPress(KeyEvent.VK_SHIFT);
-                                                    county.getRobot().keyPress(KeyEvent.VK_8);
-                                                    county.getRobot().keyRelease(KeyEvent.VK_8);
-                                                    county.getRobot().keyRelease(KeyEvent.VK_SHIFT);
-                                                }else {
-                                                    county.getRobot().keyPress(KeyEvent.getExtendedKeyCodeForChar(c));
-                                                    county.getRobot().keyRelease(KeyEvent.getExtendedKeyCodeForChar(c));
-                                                }
+                                            robotTypeButton.setText("..."+outputString);
+                                            typer.setTextToType(outputString);
+
+                                            while(typer.hasAnotherCharToType()){
+
+                                                typer.typeNextChar();
+
                                                 if(isCancelled()){
                                                     break;
                                                 }
                                             }
+
                                         }else{
                                             // we are finished
-                                            robotType.setText("Robot");
-                                            robotType.setTooltip(new Tooltip("Have robot type counterstring into field"));
+                                            robotTypeButton.setText("Robot");
+                                            robotTypeButton.setTooltip(new Tooltip("Have robot type counterstring into field"));
                                             cancel();
                                             return;
                                         }
@@ -209,7 +205,7 @@ public class CounterStringStage extends Stage {
                                 }
                             });
 
-                            if(robotType.getText().startsWith("Robot")||robotType.getText().startsWith("In [")) {
+                            if(robotTypeButton.getText().startsWith("Robot")||robotTypeButton.getText().startsWith("In [")) {
                                 Thread.sleep(1000);
                             }else{
                                 Thread.sleep(10);
@@ -225,7 +221,7 @@ public class CounterStringStage extends Stage {
 
 
 
-        robotType.setOnAction(
+        robotTypeButton.setOnAction(
                 new EventHandler<ActionEvent>() {
 
                     @Override
@@ -237,26 +233,26 @@ public class CounterStringStage extends Stage {
                         try {
 
                             if(task.isRunning()){
-                                robotType.setText("Cancelling");
+                                robotTypeButton.setText("Cancelling");
                                 task.cancel();
-                                robotType.setText("Robot");
-                                robotType.setTooltip(new Tooltip("Have robot type counterstring into field"));
+                                robotTypeButton.setText("Robot");
+                                robotTypeButton.setTooltip(new Tooltip("Have robot type counterstring into field"));
                                 return;
                             }
 
 
-                            if(robotType.getText().startsWith("Robot")){
+                            if(robotTypeButton.getText().startsWith("Robot")){
 
                                 if(!task.isRunning()){
                                     task.reset();
                                     county.createCounterStringRangesFor(Integer.parseInt(counterLength.getText()), counterstringSpacer.getText());
-                                    robotType.setText("Start");
-                                    robotType.setTooltip(new Tooltip("Click Button again to cancel Robot Typing"));
+                                    robotTypeButton.setText("Start");
+                                    robotTypeButton.setTooltip(new Tooltip("Click Button again to cancel Robot Typing"));
                                     task.start();
                                 }
 
                             }else{
-                                robotType.setText("Robot");
+                                robotTypeButton.setText("Robot");
                             }
 
                         }

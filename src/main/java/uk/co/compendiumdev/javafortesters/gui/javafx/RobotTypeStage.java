@@ -17,10 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import uk.co.compendiumdev.javafortesters.gui.awtbridge.RobotTyper;
 
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -46,55 +44,6 @@ public class RobotTypeStage extends Stage {
         robotTypeStage.requestFocus();
     }
 
-    private class Robo{
-
-        private long millisecondsPause;
-        private Robot robot;
-        private String textToType;
-        private int currentChar;
-        private long waitTime;
-
-        public void setMilliseconds(long millisecondsPause) {
-            this.millisecondsPause = millisecondsPause;
-        }
-
-        public Robot getRobot(){
-
-            if(this.robot==null) {
-                try {
-                    this.robot = new Robot();
-                } catch (AWTException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return this.robot;
-        }
-
-        public boolean hasAnotherCharToType(){
-            if(this.textToType!=null && this.currentChar<this.textToType.length()){
-                return true;
-            }
-            return false;
-        }
-
-        public void setTextToType(String textToType) {
-            this.textToType = textToType;
-            this.currentChar = 0;
-        }
-
-        public String getNextCharToType() {
-            int nextChar = this.currentChar+1;
-            String retString =  this.textToType.substring(this.currentChar,nextChar);
-            this.currentChar = nextChar;
-            return retString;
-        }
-
-        public long getwaitTime() {
-            return waitTime;
-        }
-    }
-
     public RobotTypeStage(boolean hidden) {
 
         BorderPane root = new BorderPane();
@@ -105,11 +54,11 @@ public class RobotTypeStage extends Stage {
         milliPauseVal.setTooltip(new Tooltip("The time to wait between keypresses in milliseconds"));
         milliPauseVal.setText("500");
 
-        final Button robotType = new Button();
-        robotType.setText("Robot");
-        robotType.setTooltip(new Tooltip("Have robot type string into field"));
+        final Button robotTypeButton = new Button();
+        robotTypeButton.setText("Robot");
+        robotTypeButton.setTooltip(new Tooltip("Have robot type string into field"));
 
-        robotTypeControl.getChildren().addAll(milliPauseLabel, milliPauseVal, robotType);
+        robotTypeControl.getChildren().addAll(milliPauseLabel, milliPauseVal, robotTypeButton);
         robotTypeControl.setSpacing(10);
 
         final TextArea textArea = new TextArea("");
@@ -135,14 +84,14 @@ public class RobotTypeStage extends Stage {
                 if(task!=null) {
                     if (task.isRunning()) {
                         task.cancel();
-                        robotType.setText("Robot");
-                        robotType.setTooltip(new Tooltip("Have robot type string into field"));
+                        robotTypeButton.setText("Robot");
+                        robotTypeButton.setTooltip(new Tooltip("Have robot type string into field"));
                     }
                 }
             }
         });
 
-        Robo roboTyper = new Robo();
+        RobotTyper roboTyper = new RobotTyper();
 
 
         //robot typing into field- never stop thread - once robot is used a thread ticks over in the background
@@ -156,7 +105,7 @@ public class RobotTypeStage extends Stage {
                         int x = 5;
 
                         while (!isCancelled()) {
-                            if (robotType.getText().startsWith("Robot")) {
+                            if (robotTypeButton.getText().startsWith("Robot")) {
                                 x = 5;
                             }
                             final int finalX = x--;
@@ -172,102 +121,33 @@ public class RobotTypeStage extends Stage {
                                     // In [ means continue counting
                                     // GO means calculate the counterstring
                                     // ... means iterate through and send the keys
-                                    if (robotType.getText().startsWith("Start") || robotType.getText().startsWith("In [")) {
-                                        robotType.setText("In [" + finalX + "] secs");
+                                    if (robotTypeButton.getText().startsWith("Start") || robotTypeButton.getText().startsWith("In [")) {
+                                        robotTypeButton.setText("In [" + finalX + "] secs");
                                     }
                                     if (finalX <= 0) {
-                                        robotType.setText("GO");
+                                        robotTypeButton.setText("GO");
                                         // calculate counterstring and iterator here
 
-                                        robotType.setText("...");
+                                        robotTypeButton.setText("...");
                                     }
-                                    if (robotType.getText().startsWith("...")) {
+                                    if (robotTypeButton.getText().startsWith("...")) {
                                         if (roboTyper.hasAnotherCharToType()) {
-                                            String outputString = roboTyper.getNextCharToType();
-                                            robotType.setText("..." + outputString);
-                                            //System.out.println(outputString);
-                                            for (char ct : outputString.toCharArray()) {
-                                                //System.out.println(""+c);
-                                                // this hack means that with robot we should really default to *
-                                                char c = ct;
-                                                if (c == '*') {
-                                                    roboTyper.getRobot().keyPress(KeyEvent.VK_SHIFT);
-                                                    roboTyper.getRobot().keyPress(KeyEvent.VK_8);
-                                                    roboTyper.getRobot().keyRelease(KeyEvent.VK_8);
-                                                    roboTyper.getRobot().keyRelease(KeyEvent.VK_SHIFT);
-                                                } else {
 
+                                            String outputString = roboTyper.revealNextCharToType();
+                                            robotTypeButton.setText("..." + outputString);
 
-                                                    AWTKeyStroke customMapping = getCustomKeyStrokeMapping(c);
-                                                    boolean shiftPressRequired = false;
-                                                    boolean altPressRequired = false;
-
-                                                    if (customMapping.getKeyCode() != KeyEvent.VK_UNDEFINED) {
-                                                        shiftPressRequired = customMapping.getModifiers() == (InputEvent.SHIFT_DOWN_MASK + 1);
-                                                        altPressRequired = customMapping.getModifiers() == (InputEvent.ALT_DOWN_MASK + 1);
-                                                        c = (char) customMapping.getKeyCode();
-                                                    } else {
-                                                        shiftPressRequired = Character.isUpperCase(c);
-                                                    }
-
-                                                    if (shiftPressRequired) {
-                                                        roboTyper.getRobot().keyPress(KeyEvent.VK_SHIFT);
-                                                    }
-
-                                                    if (altPressRequired) {
-                                                        roboTyper.getRobot().keyPress(KeyEvent.VK_ALT + KeyEvent.VK_RIGHT);
-                                                    }
-
-                                                    try {
-
-                                                        roboTyper.getRobot().keyPress(KeyEvent.getExtendedKeyCodeForChar(c));
-                                                        roboTyper.getRobot().keyRelease(KeyEvent.getExtendedKeyCodeForChar(c));
-
-                                                    } catch (IllegalArgumentException e) {
-
-                                                        System.out.println("could not type - " + c);
-                                                        System.out.println("Trying as special key");
-                                                        // assume an invalid key code
-                                                        e.printStackTrace();
-
-                                                        try {
-                                                            int special = getSpecialKeyCodeForChar(c);
-                                                            roboTyper.getRobot().keyPress(special);
-                                                            roboTyper.getRobot().keyRelease(special);
-                                                        } catch (Exception se) {
-
-                                                            System.out.println("could not type as special key - " + c);
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-
-
-                                                    if (altPressRequired) {
-                                                        roboTyper.getRobot().keyRelease(KeyEvent.VK_ALT + KeyEvent.VK_RIGHT);
-                                                    }
-
-                                                    if (shiftPressRequired) {
-                                                        roboTyper.getRobot().keyRelease(KeyEvent.VK_SHIFT);
-                                                    }
-                                                }
-                                            }
-
-                                            try {
-                                                Thread.sleep(roboTyper.getwaitTime());
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
+                                            roboTyper.typeNextChar();
 
                                         } else {
                                             // we are finished
-                                            robotType.setText("Robot");
+                                            robotTypeButton.setText("Robot");
                                         }
                                     }
                                 }
 
                             });
 
-                            if (robotType.getText().startsWith("Robot") || robotType.getText().startsWith("In [")) {
+                            if (robotTypeButton.getText().startsWith("Robot") || robotTypeButton.getText().startsWith("In [")) {
                                 Thread.sleep(1000);
                             } else {
                                 Thread.sleep(10);
@@ -285,7 +165,7 @@ public class RobotTypeStage extends Stage {
 
 
 
-        robotType.setOnAction(
+        robotTypeButton.setOnAction(
                 new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
@@ -295,27 +175,27 @@ public class RobotTypeStage extends Stage {
                         try {
 
                             if(task.isRunning()){
-                                robotType.setText("Cancelling");
+                                robotTypeButton.setText("Cancelling");
                                 task.cancel();
-                                robotType.setText("Robot");
-                                robotType.setTooltip(new Tooltip("Have robot start typing"));
+                                robotTypeButton.setText("Robot");
+                                robotTypeButton.setTooltip(new Tooltip("Have robot start typing"));
                                 return;
                             }
 
-                            if (robotType.getText().startsWith("Robot")) {
+                            if (robotTypeButton.getText().startsWith("Robot")) {
 
                                 if(!task.isRunning()){
                                     task.reset();
                                     roboTyper.setMilliseconds(Long.parseLong(milliPauseVal.getText()));
                                     roboTyper.setTextToType(textArea.getText());
-                                    robotType.setText("Start");
-                                    robotType.setTooltip(new Tooltip("Click Button again to cancel Robot Typing"));
+                                    robotTypeButton.setText("Start");
+                                    robotTypeButton.setTooltip(new Tooltip("Click Button again to cancel Robot Typing"));
                                     task.start();
                                 }
 
 
                             } else {
-                                robotType.setText("Robot");
+                                robotTypeButton.setText("Robot");
                             }
 
                         } catch (NumberFormatException ex) {
@@ -329,77 +209,10 @@ public class RobotTypeStage extends Stage {
 
     }
 
-    private AWTKeyStroke getCustomKeyStrokeMapping(char c) {
-        // TODO: these are setup for my keyboard, will need to allow overriding these
-
-        // shiftModifiers are - to get this @ I have to do shift 2
-        // i.e. want, unshifted
-        String shiftModifier = "~`!1@2£3$4%5^6&7*8(9)0_-+={[}]:;<,>.?/";
-        // escaped modifier in string representation
-        shiftModifier += '"' + "'";
-        shiftModifier += "|" + '\\';
-
-        String altModifier = "";
-        
-        //String altModifier = "€2#3";
-
-        int wantedChar = shiftModifier.indexOf(c);
-        if(wantedChar!=-1 && wantedChar%2==0){
-            char theCharToModify = shiftModifier.charAt(wantedChar + 1);
-            return AWTKeyStroke.getAWTKeyStroke(theCharToModify, InputEvent.SHIFT_DOWN_MASK );
-        }
-
-        // Unforutunately I can find no way to configure an Alt Right as opposed to an Alt Left key
-        wantedChar = altModifier.indexOf(c);
-        if(wantedChar!=-1 && wantedChar%2==0){
-            char theCharToModify = altModifier.charAt(wantedChar + 1);
-            return AWTKeyStroke.getAWTKeyStroke(theCharToModify, InputEvent.ALT_DOWN_MASK );
-        }
-
-        return AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_UNDEFINED,0);  // no modifiers
-    }
 
 
-    private int getSpecialKeyCodeForChar(char c) {
 
-        // this might help on some keyboards but didn't make much difference on mine
 
-        switch(c){
-            case ',': return KeyEvent.VK_COMMA;
-            case '-': return KeyEvent.VK_MINUS;
-            case '.': return KeyEvent.VK_PERIOD;
-            case '/': return KeyEvent.VK_SLASH;
-            case ';': return KeyEvent.VK_SEMICOLON;
-            case '=': return KeyEvent.VK_EQUALS;
-            case '[': return KeyEvent.VK_OPEN_BRACKET;
-            case '\\': return KeyEvent.VK_BACK_SLASH;
-            case ']': return KeyEvent.VK_CLOSE_BRACKET;
-            case '!': return KeyEvent.VK_EXCLAMATION_MARK;
-            case '@': return KeyEvent.VK_AT;
-            case '$': return KeyEvent.VK_DOLLAR;
-            case '€': return KeyEvent.VK_EURO_SIGN;
-            case '#': return KeyEvent.VK_NUMBER_SIGN;
-            //case '£':
-            //case '%':
-            case '^': return KeyEvent.VK_CIRCUMFLEX;
-            case '&': return KeyEvent.VK_AMPERSAND;
-            case '*': return KeyEvent.VK_ASTERISK;
-            case '(': return KeyEvent.VK_LEFT_PARENTHESIS;
-            case ')': return KeyEvent.VK_RIGHT_PARENTHESIS;
-            case '_': return KeyEvent.VK_UNDERSCORE;
-            case '+': return KeyEvent.VK_PLUS;
-            case '<': return KeyEvent.VK_LESS;
-            case '>': return KeyEvent.VK_GREATER;
-            case '{': return KeyEvent.VK_BRACELEFT;
-            case '}': return KeyEvent.VK_BRACERIGHT;
-            case '"': return KeyEvent.VK_QUOTEDBL;
-            case ':': return KeyEvent.VK_COLON;
-            case '\'': return KeyEvent.VK_QUOTE;
-            case '`': return KeyEvent.VK_BACK_QUOTE;
-        }
-
-        return KeyEvent.VK_UNDEFINED;
-    }
 
 
     //http://stackoverflow.com/questions/15159988/javafx-2-2-textfield-maxlength
