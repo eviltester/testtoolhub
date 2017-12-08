@@ -23,8 +23,8 @@ public abstract class AbstractRobotTask {
     }
 
     private void assignTask() {
-        //robot typing into field- never stop thread - once robot is used a thread ticks over in the background
-        // ready to be re-used
+        //robot typing into field- stoppable thread
+
         task = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
