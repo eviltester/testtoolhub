@@ -16,6 +16,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -162,17 +163,71 @@ public class RobotTypeStage extends Stage {
                                     String outputString = roboTyper.getNextCharToType();
                                     robotType.setText("..." + outputString);
                                     //System.out.println(outputString);
-                                    for (char c : outputString.toCharArray()) {
+                                    for (char ct : outputString.toCharArray()) {
                                         //System.out.println(""+c);
                                         // this hack means that with robot we should really default to *
-                                        if (c == '*') {
+                                        char c = ct;
+                                       if (c == '*') {
                                             roboTyper.getRobot().keyPress(KeyEvent.VK_SHIFT);
                                             roboTyper.getRobot().keyPress(KeyEvent.VK_8);
                                             roboTyper.getRobot().keyRelease(KeyEvent.VK_8);
                                             roboTyper.getRobot().keyRelease(KeyEvent.VK_SHIFT);
                                         } else {
-                                            roboTyper.getRobot().keyPress(KeyEvent.getExtendedKeyCodeForChar(c));
-                                            roboTyper.getRobot().keyRelease(KeyEvent.getExtendedKeyCodeForChar(c));
+
+
+
+                                            AWTKeyStroke customMapping = getCustomKeyStrokeMapping(c);
+                                            boolean shiftPressRequired = false;
+                                            boolean altPressRequired = false;
+
+                                            if(customMapping.getKeyCode()!=KeyEvent.VK_UNDEFINED){
+                                                shiftPressRequired = customMapping.getModifiers() == (InputEvent.SHIFT_DOWN_MASK + 1);
+                                                altPressRequired = customMapping.getModifiers() == (InputEvent.ALT_DOWN_MASK  + 1);
+                                                c = (char)customMapping.getKeyCode();
+                                            }else
+                                            {
+                                                shiftPressRequired = Character.isUpperCase(c);
+                                            }
+
+                                            if (shiftPressRequired) {
+                                                roboTyper.getRobot().keyPress(KeyEvent.VK_SHIFT);
+                                            }
+
+                                            if(altPressRequired){
+                                                roboTyper.getRobot().keyPress(KeyEvent.VK_ALT + KeyEvent.VK_RIGHT);
+                                            }
+
+                                            try {
+
+                                                    roboTyper.getRobot().keyPress(KeyEvent.getExtendedKeyCodeForChar(c));
+                                                    roboTyper.getRobot().keyRelease(KeyEvent.getExtendedKeyCodeForChar(c));
+
+                                            }catch(IllegalArgumentException e){
+
+                                                System.out.println("could not type - " + c);
+                                                System.out.println("Trying as special key");
+                                                // assume an invalid key code
+                                                e.printStackTrace();
+                                                
+                                                try{
+                                                    int special = getSpecialKeyCodeForChar(c);
+                                                    roboTyper.getRobot().keyPress(special);
+                                                    roboTyper.getRobot().keyRelease(special);
+                                                }catch(Exception se){
+
+                                                    System.out.println("could not type as special key - " + c);
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+
+                                            if(altPressRequired){
+                                                roboTyper.getRobot().keyRelease(KeyEvent.VK_ALT + KeyEvent.VK_RIGHT);
+                                            }
+
+                                            if (shiftPressRequired) {
+                                                roboTyper.getRobot().keyRelease(KeyEvent.VK_SHIFT);
+                                            }
                                         }
                                     }
 
@@ -188,6 +243,7 @@ public class RobotTypeStage extends Stage {
                                 }
                             }
                         }
+
                     });
 
                     if(robotType.getText().startsWith("Robot")||robotType.getText().startsWith("In [")) {
@@ -242,7 +298,77 @@ public class RobotTypeStage extends Stage {
 
     }
 
+    private AWTKeyStroke getCustomKeyStrokeMapping(char c) {
+        // TODO: these are setup for my keyboard, will need to allow overriding these
 
+        // shiftModifiers are - to get this @ I have to do shift 2
+        // i.e. want, unshifted
+        String shiftModifier = "~`!1@2£3$4%5^6&7*8(9)0_-+={[}]:;<,>.?/";
+        // escaped modifier in string representation
+        shiftModifier += '"' + "'";
+        shiftModifier += "|" + '\\';
+
+        String altModifier = "";
+        
+        //String altModifier = "€2#3";
+
+        int wantedChar = shiftModifier.indexOf(c);
+        if(wantedChar!=-1 && wantedChar%2==0){
+            char theCharToModify = shiftModifier.charAt(wantedChar + 1);
+            return AWTKeyStroke.getAWTKeyStroke(theCharToModify, InputEvent.SHIFT_DOWN_MASK );
+        }
+
+        // Unforutunately I can find no way to configure an Alt Right as opposed to an Alt Left key
+        wantedChar = altModifier.indexOf(c);
+        if(wantedChar!=-1 && wantedChar%2==0){
+            char theCharToModify = altModifier.charAt(wantedChar + 1);
+            return AWTKeyStroke.getAWTKeyStroke(theCharToModify, InputEvent.ALT_DOWN_MASK );
+        }
+
+        return AWTKeyStroke.getAWTKeyStroke(KeyEvent.VK_UNDEFINED,0);  // no modifiers
+    }
+
+
+    private int getSpecialKeyCodeForChar(char c) {
+
+        // this might help on some keyboards but didn't make much difference on mine
+
+        switch(c){
+            case ',': return KeyEvent.VK_COMMA;
+            case '-': return KeyEvent.VK_MINUS;
+            case '.': return KeyEvent.VK_PERIOD;
+            case '/': return KeyEvent.VK_SLASH;
+            case ';': return KeyEvent.VK_SEMICOLON;
+            case '=': return KeyEvent.VK_EQUALS;
+            case '[': return KeyEvent.VK_OPEN_BRACKET;
+            case '\\': return KeyEvent.VK_BACK_SLASH;
+            case ']': return KeyEvent.VK_CLOSE_BRACKET;
+            case '!': return KeyEvent.VK_EXCLAMATION_MARK;
+            case '@': return KeyEvent.VK_AT;
+            case '$': return KeyEvent.VK_DOLLAR;
+            case '€': return KeyEvent.VK_EURO_SIGN;
+            case '#': return KeyEvent.VK_NUMBER_SIGN;
+            //case '£':
+            //case '%':
+            case '^': return KeyEvent.VK_CIRCUMFLEX;
+            case '&': return KeyEvent.VK_AMPERSAND;
+            case '*': return KeyEvent.VK_ASTERISK;
+            case '(': return KeyEvent.VK_LEFT_PARENTHESIS;
+            case ')': return KeyEvent.VK_RIGHT_PARENTHESIS;
+            case '_': return KeyEvent.VK_UNDERSCORE;
+            case '+': return KeyEvent.VK_PLUS;
+            case '<': return KeyEvent.VK_LESS;
+            case '>': return KeyEvent.VK_GREATER;
+            case '{': return KeyEvent.VK_BRACELEFT;
+            case '}': return KeyEvent.VK_BRACERIGHT;
+            case '"': return KeyEvent.VK_QUOTEDBL;
+            case ':': return KeyEvent.VK_COLON;
+            case '\'': return KeyEvent.VK_QUOTE;
+            case '`': return KeyEvent.VK_BACK_QUOTE;
+        }
+
+        return KeyEvent.VK_UNDEFINED;
+    }
 
 
     //http://stackoverflow.com/questions/15159988/javafx-2-2-textfield-maxlength

@@ -117,7 +117,7 @@ public class MainGui extends Application{
         htmlComments.setText("HTML Comments");
         htmlComments.setTooltip(new Tooltip("Find HTML Comments from a URL"));
 
-        buttonsRow1.getChildren().addAll(createCounter, createString); //, robotTyper);
+        buttonsRow1.getChildren().addAll(createCounter, createString, robotTyper);
         buttonsRow1.setSpacing(10);
 
         buttonsRow2.getChildren().addAll(cannedText, launcher, htmlComments);
@@ -151,7 +151,7 @@ public class MainGui extends Application{
                 });
 
         // not yet ready for prime time
-        /*
+
         robotTyper.setOnAction(
                 new EventHandler<ActionEvent>() {
                     @Override
@@ -159,7 +159,7 @@ public class MainGui extends Application{
                         RobotTypeStage.singletonActivate();
                     }
                 });
-        */
+
 
         cannedText.setOnAction(
                 new EventHandler<ActionEvent>() {
