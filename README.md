@@ -16,6 +16,17 @@ https://en.wikipedia.org/wiki/MIT_License
 * Twitter: [@eviltester](https://twitter.com/eviltester)
 
 
+## Basic Functionality
+
+- CounterStrings - for testing input field lengths
+- Strings - generate a string of characters between to character values
+- Typer - a Robot which will 'type' using operating system keyboard events, a string in the input box **New in 1.2**
+- Canned Text Tree - handy, easy to use data
+- Launch URLs - configurable set of URLs to launch in a browser
+- HTML Comments - GET a URL, report HTML comments in the page source
+- Binary Chop - a support tool for performing binary chops **New in 1.3**
+- Config - configure parts of the tool **New in 1.3**
+
 ## CounterStrings
 
 Type in the `Length:` of counterstring.
@@ -39,6 +50,7 @@ Clearly for clipboard, we have to generate, then add to clipboard.
 
 So this only adds value for the 'Robot' at the moment.
 
+ 
 
 ## Robot Typer
 
@@ -53,7 +65,14 @@ Then typing starts.
 Press [Robot] button, or close the dialog to stop any typing currently taking place.
 
 - Not all characters can be typed.
+    - Any characters which could not be typed are shown in an alert when finished and are added to the clipboard. 
 - Currently the Shift mappings are hard coded and might not match your keyboard layout.
+   - to amend the shift mappings, use the [Config] dialog
+   - shift mappings are a string of character pairs e.g. "!1@2£3"
+      - a pair would be "!1"
+      - "!" is the character we want to see typed
+      - "1" is the key, that when pressed when shift is pressed, will output "!"
+      - Upper case alpha chars are handled automatically
 
 ## Strings
 
@@ -106,7 +125,50 @@ Compendium_Developments = https://www.compendiumdev.co.uk
 - Given a URL
 - visit page
 - extract obvious comments from page and display in text view
+- no errors are reported and no progress is shown
  
+ 
+ ## Binary Chopifier
+ 
+ Given a 'from' value and a 'to' value. Create values to try to find a value between them (or below) without trying random values or incrementing by X. A binary chop search.
+ 
+ The Binary Chopifier shows a report with the binary chop values you can use.
+ 
+ The values on the left are for the middle towards the upper value.
+ 
+ The values on the right (in brackets) are for the middle towards 0.
+ 
+ e.g.
+ 
+ ~~~~~~~~
+ Start: 1024
+ End: 2048
+ 
+ Chop: value (diff)
+ ------------------
+ 1: 1536 (512)
+ 2: 1792 (256)
+ 3: 1920 (128)
+ 4: 1984 (64)
+ 5: 2016 (32)
+ 6: 2032 (16)
+ 7: 2040 (8)
+ 8: 2044 (4)
+ 9: 2046 (2)
+ 10: 2047 (1)
+ 11: 2048 (0)
+ ~~~~~~~~
+ 
+ - above is binary chop from 1024 to 2048
+ - start with `1536` which is between `1024` and `2048`
+    - if that was too high, then try `512`
+       - if `512` was too low then try a binary chop between `512` and 1024`
+ - if that was too low, then try `1792`, then try `1920` etc.
+    - when you reach a point that is too high, then try binary chopping that, with the last 'low' value you tried.
+    
+## Config
+
+- Config lets you amend the Shift Modified characters for the Robot Typer. See the instructions in Robot Typer for more information.      
 
 ## TODO
 
@@ -124,11 +186,7 @@ Compendium_Developments = https://www.compendiumdev.co.uk
 
 - Launch URLs TODO:
     - config browser
-    
-- Robot Typer:
-    - configurable override of shift characters
-    - tracking the exceptions and report which chars not typed
-    
+        
 - General
     - split out data generation into libraries as maven includes
     - more @Test code
@@ -138,6 +196,13 @@ Compendium_Developments = https://www.compendiumdev.co.uk
     
 ## Release Notes
       
+### 20171209 9th December 2017 - version 1.2
+
+- internal code tidy up
+- Robot Typer now reports characters it was unable to type, these are added to the clipboard when typing finishes
+- Added a [Config] button, which opens a dialog where the shifted characters uses by the Robot Typer can be configured
+- Added a GUI for the Binary Chopper report - this was previously only accessible if you ran the unit tests
+         
 ### 20171208 8th December 2017 - version 1.2
 
 - Reinstated the Robot Typer
