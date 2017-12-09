@@ -196,11 +196,11 @@ Compendium_Developments = https://www.compendiumdev.co.uk
     
 ## Release Notes
       
-### 20171209 9th December 2017 - version 1.2
+### 20171209 9th December 2017 - version 1.3
 
 - internal code tidy up
 - Robot Typer now reports characters it was unable to type, these are added to the clipboard when typing finishes
-- Added a [Config] button, which opens a dialog where the shifted characters uses by the Robot Typer can be configured
+- Added a [Config] button, which opens a dialog where the shifted characters used by the Robot Typer can be configured
 - Added a GUI for the Binary Chopper report - this was previously only accessible if you ran the unit tests
          
 ### 20171208 8th December 2017 - version 1.2
