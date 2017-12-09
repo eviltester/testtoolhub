@@ -26,7 +26,7 @@ public class RobotTyperTask extends AbstractRobotTask{
     void robotDoTheWork() {
 
         String outputString = roboTyper.revealNextCharToType();
-        robotTypeButton.setText("..." + outputString);
+        robotTypeButton.setText("...  " + outputString + "  " + roboTyper.getCurrentCharCount() + "/" + roboTyper.getTotalCharCount());
 
         roboTyper.typeNextChar();
     }

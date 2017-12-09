@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.gui.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -9,16 +9,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterString;
 import uk.co.compendiumdev.javafortesters.counterstrings.CounterStringCreationError;
 import uk.co.compendiumdev.javafortesters.counterstrings.County;
+import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.gui.javafx.robottasks.CounterStringRobotTask;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 
 public class CounterStringStage extends Stage {
@@ -36,33 +37,21 @@ public class CounterStringStage extends Stage {
     }
 
 
-
     public CounterStringStage(boolean hidden) {
 
         BorderPane root = new BorderPane();
 
         HBox counterstringControl = new HBox();
-        final Label lengthLabel = new Label("Length:");
-        final TextField counterLength = new TextField ();
-        counterLength.setTooltip(new Tooltip("The length of the CounterString to create"));
-        counterLength.setText("100");
-        Button createCounter = new Button();
-        createCounter.setText("Create");
-        createCounter.setTooltip(new Tooltip("Create a CounterString and display in the text area"));
+        Label lengthLabel = new Label("Length:");
 
-        final TextField counterstringSpacer = new TextField ();
-        counterstringSpacer.setText("*");
-        counterstringSpacer.setTooltip(new Tooltip("The spacer value for the counterstring"));
-        counterstringSpacer.setMaxWidth(50);
+        TextField counterLength = JavaFX.textField("100", "The length of the CounterString to create");
+        Button createCounter = JavaFX.button("Create", "Create a CounterString and display in the text area");
+        TextField counterstringSpacer = JavaFX.textField("*", "The spacer value for the counterstring", 50);
         addTextLimiter(counterstringSpacer,1);
 
-        Button createClipboard = new Button();
-        createClipboard.setText("=>");
-        createClipboard.setTooltip(new Tooltip("Create direct to clipboard"));
+        Button createClipboard = JavaFX.button("=>", "Create direct to clipboard");
+        Button copyCounterString = JavaFX.button("Copy", "Copy the text in the text area to the clipboard");
 
-        final Button copyCounterString = new Button();
-        copyCounterString.setText("Copy");
-        copyCounterString.setTooltip(new Tooltip("Copy the text in the text area to the clipboard"));
 
         counterstringControl.getChildren().addAll(lengthLabel, counterLength, counterstringSpacer,
                 createCounter, createClipboard, copyCounterString);
@@ -70,23 +59,14 @@ public class CounterStringStage extends Stage {
 
 
         HBox lengthControl = new HBox();
-        final Button lenCounter = new Button();
-        lenCounter.setText("Length?");
-        lenCounter.setTooltip(new Tooltip("Count the number of characters in the text area below"));
-        final Label lengthCount = new Label("");
 
-        final Button clearTextArea = new Button();
-        clearTextArea.setText("Clear");
-        clearTextArea.setTooltip(new Tooltip("Clear the text from the text area"));
+        Button lenCounter = JavaFX.button("Length?", "Count the number of characters in the text area below");
 
+        Label lengthCount = new Label("");
 
-        final Button configureRobotButton = new Button();
-        configureRobotButton.setText("Configure Robot");
-        configureRobotButton.setTooltip(new Tooltip("Configure Robot To use current counterstring settings"));
-
-        final Button robotTypeButton = new Button();
-        robotTypeButton.setText("Robot");
-        robotTypeButton.setTooltip(new Tooltip("Have robot type counterstring into field"));
+        Button clearTextArea = JavaFX.button("Clear", "Clear the text from the text area");
+        Button configureRobotButton = JavaFX.button("Configure Robot", "Configure Robot To use current counterstring settings");
+        Button robotTypeButton = JavaFX.button("Robot", "Have robot type counterstring into field");
 
         lengthControl.getChildren().addAll(lenCounter, lengthCount, clearTextArea, configureRobotButton, robotTypeButton);
         lengthControl.setSpacing(10);
@@ -105,6 +85,7 @@ public class CounterStringStage extends Stage {
         Scene scene = new Scene(root, Config.getDefaultWindowWidth(), Config.getDefaultWindowHeight());
         this.setTitle("Counterstrings");
         this.setScene(scene);
+
         if(!hidden)
             this.show();
 
@@ -140,7 +121,7 @@ public class CounterStringStage extends Stage {
                         //} catch (CounterStringCreationError counterStringCreationError) {
                         //    alertException(counterStringCreationError);
                         }catch(Exception ex){
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
                     }
                 });
@@ -157,9 +138,9 @@ public class CounterStringStage extends Stage {
                         catch(NumberFormatException ex){
                             alertLengthNotNumeric();
                         } catch (CounterStringCreationError counterStringCreationError) {
-                            alertException(counterStringCreationError);
+                            JavaFX.alertErrorDialogWithException(counterStringCreationError);
                         }catch(Exception ex){
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
                     }
                 });
@@ -175,7 +156,7 @@ public class CounterStringStage extends Stage {
                         } catch (NumberFormatException ex) {
                             alertLengthNotNumeric();
                         } catch (Exception ex) {
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
 
                     }
@@ -190,7 +171,7 @@ public class CounterStringStage extends Stage {
                             textArea.setText("");
 
                         } catch (Exception ex) {
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
 
                     }
@@ -202,7 +183,7 @@ public class CounterStringStage extends Stage {
                 try {
                     lengthCount.setText(String.valueOf(textArea.getText().length()));
                 }catch (Exception ex){
-                    alertException(ex);
+                    JavaFX.alertErrorDialogWithException(ex);
                 }
             }
         });
@@ -220,9 +201,9 @@ public class CounterStringStage extends Stage {
                 catch(NumberFormatException ex){
                     alertLengthNotNumeric();
                 } catch (CounterStringCreationError counterStringCreationError) {
-                    alertException(counterStringCreationError);
+                    JavaFX.alertErrorDialogWithException(counterStringCreationError);
                 }catch(Exception ex){
-                    alertException(ex);
+                    JavaFX.alertErrorDialogWithException(ex);
                 }
 
             }
@@ -231,8 +212,6 @@ public class CounterStringStage extends Stage {
 
 
     }
-
-
 
 
     //http://stackoverflow.com/questions/15159988/javafx-2-2-textfield-maxlength
@@ -248,47 +227,8 @@ public class CounterStringStage extends Stage {
         });
     }
 
-    private void alertException(Throwable ex) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Exception Dialog");
-        alert.setHeaderText(null);
-        alert.setContentText(ex.getMessage());
-
-        // Create expandable Exception.
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        ex.printStackTrace(pw);
-        String exceptionText = sw.toString();
-
-        Label label = new Label("The exception stacktrace was:");
-
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-        // Set expandable Exception into the dialog pane.
-        alert.getDialogPane().setExpandableContent(expContent);
-
-        alert.showAndWait();
-    }
-
     private void alertLengthNotNumeric() {
-        // http://code.makery.ch/blog/javafx-dialogs-official/
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Length is not numeric");
-        alert.setHeaderText(null);
-        alert.setContentText("Length needs to be an integer");
-        alert.showAndWait();
+        JavaFX.showSimpleErrorAlert("Length is not numeric", "Length needs to be an integer");
     }
 
     private void sendToClipboard(String contents, Button copyCounter) {

@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.gui.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
 import uk.co.compendiumdev.javafortesters.gui.urllauncher.PhysicalUrlLauncher;
 import uk.co.compendiumdev.javafortesters.launcher.LauncherUrl;
 import uk.co.compendiumdev.javafortesters.launcher.LauncherUrlLoader;

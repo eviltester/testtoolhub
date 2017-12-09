@@ -1,4 +1,4 @@
-package uk.co.compendiumdev.javafortesters.gui.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -7,13 +7,14 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.gui.javafx.robottasks.RobotTyperTask;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /*
     20170306 knocked up quick typer for my use
@@ -42,19 +43,10 @@ public class RobotTypeStage extends Stage {
         BorderPane root = new BorderPane();
 
         HBox robotTypeControl = new HBox();
-        final Label milliPauseLabel = new Label("MilliSeconds:");
-        final TextField milliPauseVal = new TextField ();
-        milliPauseVal.setTooltip(new Tooltip("The time to wait between keypresses in milliseconds"));
-        milliPauseVal.setText("500");
-
-        final Button configureRobotButton = new Button();
-        configureRobotButton.setText("Configure Robot");
-        configureRobotButton.setTooltip(new Tooltip("Configure Robot To use current typing settings"));
-
-        final Button robotTypeButton = new Button();
-        robotTypeButton.setText("Robot");
-        robotTypeButton.setTooltip(new Tooltip("Have robot type string into field"));
-
+            final Label milliPauseLabel = new Label("MilliSeconds:");
+            final TextField milliPauseVal = JavaFX.textField("500", "The time to wait between keypresses in milliseconds");
+            final Button configureRobotButton = JavaFX.button("Configure Robot","Configure Robot To use current typing settings");
+            final Button robotTypeButton = JavaFX.button("Robot","Have robot type string into field");
         robotTypeControl.getChildren().addAll(milliPauseLabel, milliPauseVal, configureRobotButton, robotTypeButton);
         robotTypeControl.setSpacing(10);
 
@@ -97,7 +89,7 @@ public class RobotTypeStage extends Stage {
                         catch(NumberFormatException ex){
                             alertLengthNotNumeric();
                         }catch(Exception ex){
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
                     }
                 });
@@ -119,47 +111,9 @@ public class RobotTypeStage extends Stage {
         });
     }
 
-    private void alertException(Throwable ex) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Exception Dialog");
-        alert.setHeaderText(null);
-        alert.setContentText(ex.getMessage());
-
-        // Create expandable Exception.
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        ex.printStackTrace(pw);
-        String exceptionText = sw.toString();
-
-        Label label = new Label("The exception stacktrace was:");
-
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-        // Set expandable Exception into the dialog pane.
-        alert.getDialogPane().setExpandableContent(expContent);
-
-        alert.showAndWait();
-    }
 
     private void alertLengthNotNumeric() {
-        // http://code.makery.ch/blog/javafx-dialogs-official/
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Length is not numeric");
-        alert.setHeaderText(null);
-        alert.setContentText("Length needs to be an integer");
-        alert.showAndWait();
+        JavaFX.showSimpleErrorAlert("Length is not numeric","Length needs to be an integer");
     }
 
 

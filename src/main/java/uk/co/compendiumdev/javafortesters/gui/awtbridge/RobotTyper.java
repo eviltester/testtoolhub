@@ -9,6 +9,7 @@ public class RobotTyper {
     private String textToType;
     private int currentChar;
     private long waitTime;
+    private int totalChars;
 
     public void setMilliseconds(long millisecondsPause) {
         this.millisecondsPause = millisecondsPause;
@@ -37,6 +38,7 @@ public class RobotTyper {
     public void setTextToType(String textToType) {
         this.textToType = textToType;
         this.currentChar = 0;
+        this.totalChars = textToType.length();
     }
 
     private String getNextCharToType() {
@@ -74,5 +76,13 @@ public class RobotTyper {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getCurrentCharCount() {
+        return currentChar;
+    }
+
+    public int getTotalCharCount() {
+        return totalChars;
     }
 }

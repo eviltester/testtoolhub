@@ -1,24 +1,23 @@
-package uk.co.compendiumdev.javafortesters.gui.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 
 import java.awt.*;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 
 public class StringGeneratorStage extends Stage {
@@ -55,32 +54,24 @@ public class StringGeneratorStage extends Stage {
 
         HBox asciiControlCharToCharInputs = new HBox();
         final Label firstCharLbl = new Label("First Value:");
-        final TextField firstCharTxt = new TextField ();
-        firstCharTxt.setText("1");
+
+        final TextField firstCharTxt = JavaFX.textField("1", "Starting Ascii Code Value");
+
         final Label secondCharLbl = new Label("Second Value:");
-        final TextField secondCharTxt = new TextField ();
-        secondCharTxt.setText("255");
+        final TextField secondCharTxt = JavaFX.textField("255", "Final Ascii Code Value");
 
         HBox asciiControlCharToCharButtons = new HBox();
-        Button createAsciiCharToChar = new Button();
-        createAsciiCharToChar.setText("Create");
-        createAsciiCharToChar.setTooltip(new Tooltip("Create a string from first char val to second char val"));
+        Button createAsciiCharToChar = JavaFX.button("Create", "Create a string from first char val to second char val");
 
-        Button createAsciiCharToCharClipboard = new Button();
-        createAsciiCharToCharClipboard.setText("=>");
-        createAsciiCharToCharClipboard.setTooltip(new Tooltip("Create direct to clipboard\nUseful for non display or high unicode values"));
+        Button createAsciiCharToCharClipboard = JavaFX.button("=>", "Create direct to clipboard\nUseful for non display or high unicode values");
 
-        final Button copyToClipboard = new Button();
-        copyToClipboard.setText("Copy");
-        copyToClipboard.setTooltip(new Tooltip("Copy the text in the text area to the clipboard"));
+        final Button copyToClipboard = JavaFX.button("Copy","Copy the text in the text area to the clipboard");
 
-        final Button asciihelp = new Button();
-        asciihelp.setText("?");
-        asciihelp.setTooltip(new Tooltip("see " + asciiCodeURL + "\n" +
+        final Button asciihelp = JavaFX.button("?","see " + asciiCodeURL + "\n" +
                 "ASCII control characters (character code 0-31)\n" +
                 "ASCII printable characters (character code 32-127)\n" +
                 "The extended ASCII codes (character code 128-255)\n" +
-                "Unicode (above 255)"));
+                "Unicode (above 255)");
 
         asciiControlCharToCharInputs.getChildren().addAll(  firstCharLbl, firstCharTxt,
                                                       secondCharLbl, secondCharTxt);
@@ -91,9 +82,7 @@ public class StringGeneratorStage extends Stage {
 
         final Label warning = new Label("Warning: unicode values can cause rendering issues in this control, and '0' will not render to clipboard");
 
-        final Button clearTextArea = new Button();
-        clearTextArea.setText("Clear");
-        clearTextArea.setTooltip(new Tooltip("Clear the text area below"));
+        final Button clearTextArea = JavaFX.button("Clear", "Clear the text area below");
 
         VBox form = new VBox();
         form.getChildren().addAll(asciiControlCharToCharInputs, asciiControlCharToCharButtons, warning, clearTextArea);
@@ -124,7 +113,7 @@ public class StringGeneratorStage extends Stage {
                         catch(NumberFormatException ex){
                             alertFirstOrSecondCharNotNumeric();
                         }catch(Exception ex){
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
                     }
                 });
@@ -138,7 +127,7 @@ public class StringGeneratorStage extends Stage {
                             sendToClipboard(textArea.getText(), copyToClipboard);
 
                         } catch (Exception ex) {
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
 
                     }
@@ -153,7 +142,7 @@ public class StringGeneratorStage extends Stage {
                             textArea.setText("");
 
                         } catch (Exception ex) {
-                            alertException(ex);
+                            JavaFX.alertErrorDialogWithException(ex);
                         }
 
                     }
@@ -163,10 +152,8 @@ public class StringGeneratorStage extends Stage {
                                @Override public void handle(ActionEvent e) {
                                    try {
                                        Desktop.getDesktop().browse(new URI(asciiCodeURL));
-                                   } catch (IOException e1) {
-                                       alertException(e1);
-                                   } catch (URISyntaxException e1) {
-                                       alertException(e1);
+                                   } catch (Exception e1) {
+                                       JavaFX.alertErrorDialogWithException(e1);
                                    }
                                }
                            }
@@ -188,7 +175,7 @@ public class StringGeneratorStage extends Stage {
                     alertFirstOrSecondCharNotNumeric();
 
                 }catch(Exception ex){
-                    alertException(ex);
+                    JavaFX.alertErrorDialogWithException(ex);
                 }
 
             }
@@ -230,47 +217,11 @@ public class StringGeneratorStage extends Stage {
     }
 
 
-    private void alertException(Throwable ex) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Exception Dialog");
-        alert.setHeaderText(null);
-        alert.setContentText(ex.getMessage());
 
-        // Create expandable Exception.
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        ex.printStackTrace(pw);
-        String exceptionText = sw.toString();
-
-        Label label = new Label("The exception stacktrace was:");
-
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-        // Set expandable Exception into the dialog pane.
-        alert.getDialogPane().setExpandableContent(expContent);
-
-        alert.showAndWait();
-    }
 
     private void alertFirstOrSecondCharNotNumeric() {
-        // http://code.makery.ch/blog/javafx-dialogs-official/
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("First and Second Values need to be numeric");
-        alert.setHeaderText(null);
-        alert.setContentText("First and Second Values need to be numeric, and between 0 and 255 for ascii");
-        alert.showAndWait();
+        JavaFX.showSimpleErrorAlert("First and Second Values need to be numeric",
+                "First and Second Values need to be numeric, and between 0 and 255 for ascii");
     }
 
     private void sendToClipboard(String contents, Button copyCounter) {

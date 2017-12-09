@@ -1,8 +1,9 @@
-package uk.co.compendiumdev.javafortesters.gui.javafx;
+package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
 import uk.co.compendiumdev.javafortesters.cannedtext.CannedText;
 import uk.co.compendiumdev.javafortesters.cannedtext.CannedTextItem;
 import uk.co.compendiumdev.javafortesters.cannedtext.CannedTextItemTreeFinder;
+import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
 import uk.co.compendiumdev.javafortesters.tree.TreeBranch;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

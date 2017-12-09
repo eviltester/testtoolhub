@@ -14,8 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import uk.co.compendiumdev.javafortesters.gui.javafx.RobotTypeStage;
-import uk.co.compendiumdev.javafortesters.gui.javafx.*;
+import uk.co.compendiumdev.javafortesters.gui.javafx.stages.*;
 
 
 public class MainGui extends Application{
