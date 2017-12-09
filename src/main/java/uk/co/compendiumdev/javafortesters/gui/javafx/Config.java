@@ -11,7 +11,7 @@ public class Config {
         return 200;
     }
 
-    // TODO: these are setup for my keyboard, will need to allow overriding these
+    // string of paired characters, first is the 'wanted' char, next is the 'shifted' char
     // escaped modifier in string representation are at the end
     private static String defaultShiftModifiers = "~`!1@2£3$4%5^6&7*8(9)0_-+={[}]:;<,>.?/" + '"' + "'" + "|" + '\\';
 

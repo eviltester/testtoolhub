@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import uk.co.compendiumdev.javafortesters.domain.cannedtext.CannedText;
 import uk.co.compendiumdev.javafortesters.domain.cannedtext.CannedTextItem;
 import uk.co.compendiumdev.javafortesters.domain.cannedtext.CannedTextItemTreeFinder;
+import uk.co.compendiumdev.javafortesters.domain.tree.TreeKeyValue;
 import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
 import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.domain.tree.TreeBranch;
@@ -37,20 +38,6 @@ public class CannedTextTreeStage extends Stage {
                 CannedTextTreeStage.singletonActivate();
             }
         };
-    }
-
-    private class TreeKeyValue{
-        public String key;
-        public String value;
-
-        TreeKeyValue(String key, String value){
-            this.key = key;
-            this.value = value;
-        }
-
-        public String toString(){
-            return this.value;
-        }
     }
 
 

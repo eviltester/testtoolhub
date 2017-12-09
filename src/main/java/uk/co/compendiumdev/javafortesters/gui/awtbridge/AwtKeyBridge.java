@@ -138,7 +138,7 @@ public class AwtKeyBridge {
             case '!': return KeyEvent.VK_EXCLAMATION_MARK;
             case '@': return KeyEvent.VK_AT;
             case '$': return KeyEvent.VK_DOLLAR;
-            case '€': return KeyEvent.VK_EURO_SIGN;
+            //case '€': return KeyEvent.VK_EURO_SIGN;
             case '#': return KeyEvent.VK_NUMBER_SIGN;
             //case '£':
             //case '%':

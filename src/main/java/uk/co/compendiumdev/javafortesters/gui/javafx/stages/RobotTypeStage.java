@@ -1,20 +1,21 @@
 package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
-import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.gui.javafx.robottasks.RobotTyperTask;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 
 /*
     20170306 knocked up quick typer for my use
@@ -106,24 +107,8 @@ public class RobotTypeStage extends Stage {
     }
 
 
-
-
-    //http://stackoverflow.com/questions/15159988/javafx-2-2-textfield-maxlength
-    public void addTextLimiter(final TextField tf, final int maxLength) {
-        tf.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
-                if (tf.getText().length() > maxLength) {
-                    String s = tf.getText().substring(0, maxLength);
-                    tf.setText(s);
-                }
-            }
-        });
-    }
-
-
     private void alertLengthNotNumeric() {
-        JavaFX.showSimpleErrorAlert("Length is not numeric","Length needs to be an integer");
+        JavaFX.showSimpleErrorAlert("Typing Pause Time is not numeric","Pause time needs to be an integer representing a number of milliseconds");
     }
 
 
