@@ -2,8 +2,10 @@ package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -16,10 +18,10 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
 import uk.co.compendiumdev.javafortesters.gui.urllauncher.PhysicalUrlLauncher;
-import uk.co.compendiumdev.javafortesters.launcher.LauncherUrl;
-import uk.co.compendiumdev.javafortesters.launcher.LauncherUrlLoader;
-import uk.co.compendiumdev.javafortesters.launcher.LauncherUrlSet;
-import uk.co.compendiumdev.javafortesters.launcher.UrlLauncher;
+import uk.co.compendiumdev.javafortesters.domain.launcher.LauncherUrl;
+import uk.co.compendiumdev.javafortesters.domain.launcher.LauncherUrlLoader;
+import uk.co.compendiumdev.javafortesters.domain.launcher.LauncherUrlSet;
+import uk.co.compendiumdev.javafortesters.domain.launcher.UrlLauncher;
 
 
 public class UrlLauncherGridStage  extends Stage {
@@ -35,14 +37,23 @@ public class UrlLauncherGridStage  extends Stage {
         urlLauncherGridSingletonStage.requestFocus();
     }
 
+    public static EventHandler<ActionEvent> getActivationEvent() {
+        return
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent e) {
+                        UrlLauncherGridStage.singletonActivate();
+                    }
+                };
+    }
+
+
+
     public UrlLauncherGridStage(boolean hidden){
-
-
 
         // get the data
         LauncherUrlLoader loader = new LauncherUrlLoader();
         UrlLauncher urls = loader.load();
-
 
         final ObservableList<LauncherUrlSet> profiles = FXCollections.observableArrayList();
         profiles.addAll(urls.getSets());
@@ -50,9 +61,16 @@ public class UrlLauncherGridStage  extends Stage {
         final ObservableList<LauncherUrl> urlsList = FXCollections.observableArrayList();
         urlsList.addAll(profiles.get(0).getUrls().values());
 
-
-
         BorderPane root = new BorderPane();
+
+
+        // if cannot launch then show warning at top
+        if(!PhysicalUrlLauncher.canLaunch()) {
+            HBox topRow = new HBox();
+            Label warningLabel = new Label("Warning: Desktop does not support url launching");
+            topRow.getChildren().add(warningLabel);
+            root.setTop(topRow);
+        }
 
         // left grid
         TableView leftside = new TableView();
@@ -60,8 +78,6 @@ public class UrlLauncherGridStage  extends Stage {
         leftside.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn profileCol = new TableColumn("Profile");
         leftside.getColumns().add(profileCol);
-
-
 
         profileCol.setCellFactory(new Callback<TableColumn<LauncherUrlSet, String>, TableCell<LauncherUrlSet, String>>() {
             @Override
@@ -169,5 +185,7 @@ public class UrlLauncherGridStage  extends Stage {
 
 
         };
+
+
 
 }

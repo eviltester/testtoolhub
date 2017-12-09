@@ -1,13 +1,20 @@
 package uk.co.compendiumdev.javafortesters.gui.javafx.utils;
 
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * An unsorted list of wrapper methods around JavaFX functionality to clean up other classes
+ * If this gets too big then refactor into separate classes
+ */
 public class JavaFX {
+
     public static Button button(String text, String tooltip) {
         Button abutton = new Button();
         abutton.setText(text);
@@ -70,5 +77,13 @@ public class JavaFX {
         alert.setContentText(message);
         alert.showAndWait();
 
+    }
+
+    public static void sendTextToClipboard(String textToSend) {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        clipboard.clear();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(textToSend);
+        clipboard.setContent(content);
     }
 }

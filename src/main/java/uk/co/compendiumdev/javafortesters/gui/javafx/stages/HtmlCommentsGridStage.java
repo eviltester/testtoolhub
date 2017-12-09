@@ -10,7 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
 import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
-import uk.co.compendiumdev.javafortesters.html.comments.HTMLCommentReporter;
+import uk.co.compendiumdev.javafortesters.domain.html.comments.HTMLCommentReporter;
 
 public class HtmlCommentsGridStage extends Stage {
 
@@ -26,6 +26,14 @@ public class HtmlCommentsGridStage extends Stage {
         htmlCommentsGridSingletonStage.requestFocus();
     }
 
+    public static EventHandler<ActionEvent> getActivationEvent() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                HtmlCommentsGridStage.singletonActivate();
+            }
+        };
+    }
 
     public HtmlCommentsGridStage(boolean hidden){
 
@@ -77,6 +85,7 @@ public class HtmlCommentsGridStage extends Stage {
                 });
 
         };
+
 
 
 

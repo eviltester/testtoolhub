@@ -2,7 +2,7 @@ package uk.co.compendiumdev.javafortesters.gui.javafx.robottasks;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
-import uk.co.compendiumdev.javafortesters.counterstrings.County;
+import uk.co.compendiumdev.javafortesters.domain.counterstrings.County;
 
 public class CounterStringRobotTask extends AbstractRobotTask{
 
@@ -53,4 +53,6 @@ public class CounterStringRobotTask extends AbstractRobotTask{
         this.spacerText = spacerText;
         resetRobot();
     }
+
+
 }

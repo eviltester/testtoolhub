@@ -3,20 +3,36 @@ package uk.co.compendiumdev.javafortesters.gui.awtbridge;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AwtKeyBridge {
 
     private final Robot robot;
     String shiftModifier="";
+    private Set<Character> couldNotType;
 
     public AwtKeyBridge(Robot robot) {
         this.robot = robot;
+        couldNotType = new HashSet<>();
+    }
 
-        // TODO: these are setup for my keyboard, will need to allow overriding these
-        shiftModifier = "~`!1@2£3$4%5^6&7*8(9)0_-+={[}]:;<,>.?/";
-        // escaped modifier in string representation
-        shiftModifier += '"' + "'";
-        shiftModifier += "|" + '\\';
+    public Set<Character> getCouldNotTypeChars(){
+        return couldNotType;
+    }
+
+    public void resetCouldNotType() {
+        couldNotType = new HashSet<>();
+    }
+
+    public void setShiftModifiers(String modifiers){
+
+        if(modifiers.length()%2!=0){
+            System.out.println("ERROR: the modifier String must be pairs of chars 'wanted' followed by 'shifted'");
+            throw new IllegalArgumentException("The modifier String must be pairs of chars 'wanted' followed by 'shifted'");
+        }
+
+        shiftModifier = modifiers;
     }
 
     public AWTKeyStroke getCustomKeyStrokeMapping(char c) {
@@ -80,7 +96,7 @@ public class AwtKeyBridge {
             System.out.println("could not type - " + c);
             System.out.println("Trying as special key");
             // assume an invalid key code
-            e.printStackTrace();
+            //e.printStackTrace();
 
             try {
                 int special = getSpecialKeyCodeForChar(c);
@@ -89,7 +105,8 @@ public class AwtKeyBridge {
             } catch (Exception se) {
 
                 System.out.println("could not type as special key - " + c);
-                e.printStackTrace();
+                couldNotType.add(c);
+                //e.printStackTrace();
             }
         }
 
@@ -144,4 +161,6 @@ public class AwtKeyBridge {
 
         return KeyEvent.VK_UNDEFINED;
     }
+
+
 }

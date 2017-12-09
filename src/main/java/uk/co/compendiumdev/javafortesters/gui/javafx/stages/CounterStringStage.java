@@ -6,26 +6,29 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import uk.co.compendiumdev.javafortesters.counterstrings.CounterString;
-import uk.co.compendiumdev.javafortesters.counterstrings.CounterStringCreationError;
-import uk.co.compendiumdev.javafortesters.counterstrings.County;
+import uk.co.compendiumdev.javafortesters.domain.counterstrings.CounterString;
+import uk.co.compendiumdev.javafortesters.domain.counterstrings.CounterStringCreationError;
+import uk.co.compendiumdev.javafortesters.domain.counterstrings.County;
 import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
-import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.gui.javafx.robottasks.CounterStringRobotTask;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 
 
 public class CounterStringStage extends Stage {
 
     private static CounterStringStage counterStringSingletonStage=null;
     static CounterStringRobotTask robotTasker;
+
+    /* Test Tool Hub Static Stage Requirements */
 
     public static void singletonActivate(){
 
@@ -34,6 +37,21 @@ public class CounterStringStage extends Stage {
 
         counterStringSingletonStage.show();
         counterStringSingletonStage.requestFocus();
+    }
+
+    public static EventHandler<ActionEvent> getActivationEvent() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                CounterStringStage.singletonActivate();
+            }
+        };
+    }
+
+    public static void stopServices() {
+        if(robotTasker!=null){
+            robotTasker.stopTheTask();
+        }
     }
 
 
@@ -233,17 +251,10 @@ public class CounterStringStage extends Stage {
 
     private void sendToClipboard(String contents, Button copyCounter) {
         copyCounter.setText("Copying");
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(contents);
-        clipboard.setContent(content);
+        JavaFX.sendTextToClipboard(contents);
         copyCounter.setText("Copied");
     }
 
 
-    public static void stopServices() {
-        if(robotTasker!=null){
-            robotTasker.stopTheTask();
-        }
-    }
+
 }

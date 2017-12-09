@@ -7,14 +7,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
 import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
+import uk.co.compendiumdev.javafortesters.domain.strings.AsciiStringGenerator;
 
 import java.awt.*;
 import java.net.URI;
@@ -32,6 +31,17 @@ public class StringGeneratorStage extends Stage {
         stringGeneratorSingletonStage.show();
         stringGeneratorSingletonStage.requestFocus();
     }
+
+    public static EventHandler<ActionEvent> getActivationEvent() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                StringGeneratorStage.singletonActivate();
+            }
+        };
+    }
+
+
 
     public StringGeneratorStage(boolean hidden){
 
@@ -108,7 +118,7 @@ public class StringGeneratorStage extends Stage {
                         try {
                             int from = Integer.parseInt(firstCharTxt.getText());
                             int to = Integer.parseInt(secondCharTxt.getText());
-                            sendToClipboard(createString(from, to), copyToClipboard);
+                            sendToClipboard(new AsciiStringGenerator(from,to).create(), copyToClipboard);
                         }
                         catch(NumberFormatException ex){
                             alertFirstOrSecondCharNotNumeric();
@@ -167,7 +177,7 @@ public class StringGeneratorStage extends Stage {
                 try {
                     int from = Integer.parseInt(firstCharTxt.getText());
                     int to = Integer.parseInt(secondCharTxt.getText());
-                    String created = createString(from, to);
+                    String created = new AsciiStringGenerator(from,to).create();
                     textArea.setText(created);
                     copyToClipboard.setText("Copy");
                 }
@@ -184,41 +194,6 @@ public class StringGeneratorStage extends Stage {
 
     }
 
-    private String createString(int from, int to) {
-        StringBuilder created = new StringBuilder();
-
-        int step = 1;
-
-        if(from > to){
-            step = -1;
-        }
-
-        boolean generated=false;
-
-        int nextChar = from;
-
-        do{
-            char theChar = (char)nextChar;
-            created.append(theChar);
-            nextChar+=step;
-
-            if(step==-1){
-                if(nextChar<to){
-                    generated=true;
-                }
-            }else{
-                if(nextChar>to){
-                    generated=true;
-                }
-            }
-        }while(!generated);
-
-        return created.toString();
-    }
-
-
-
-
     private void alertFirstOrSecondCharNotNumeric() {
         JavaFX.showSimpleErrorAlert("First and Second Values need to be numeric",
                 "First and Second Values need to be numeric, and between 0 and 255 for ascii");
@@ -226,11 +201,7 @@ public class StringGeneratorStage extends Stage {
 
     private void sendToClipboard(String contents, Button copyCounter) {
         copyCounter.setText("Copying");
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        clipboard.clear();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(contents);
-        clipboard.setContent(content);
+        JavaFX.sendTextToClipboard(contents);
         copyCounter.setText("Copied");
     }
 

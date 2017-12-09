@@ -2,11 +2,10 @@ package uk.co.compendiumdev.javafortesters.gui.javafx.robottasks;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
-import uk.co.compendiumdev.javafortesters.gui.awtbridge.RobotTyper;
 
 public class RobotTyperTask extends AbstractRobotTask{
 
-    RobotTyper roboTyper;
+
     private long millisecondsGap;
     private String textToType;
 
@@ -14,21 +13,18 @@ public class RobotTyperTask extends AbstractRobotTask{
 
         configureAbstractRobotTask(buttonToControl);
 
-        roboTyper = new RobotTyper();
     }
 
-
-
     boolean robotIsStillWorking() {
-        return roboTyper.hasAnotherCharToType();
+        return typer.hasAnotherCharToType();
     }
 
     void robotDoTheWork() {
 
-        String outputString = roboTyper.revealNextCharToType();
-        robotTypeButton.setText("...  " + outputString + "  " + roboTyper.getCurrentCharCount() + "/" + roboTyper.getTotalCharCount());
+        String outputString = typer.revealNextCharToType();
+        robotTypeButton.setText("...  " + outputString + "  " + typer.getCurrentCharCount() + "/" + typer.getTotalCharCount());
 
-        roboTyper.typeNextChar();
+        typer.typeNextChar();
     }
 
     public void resetRobotButtonText(){
@@ -37,8 +33,8 @@ public class RobotTyperTask extends AbstractRobotTask{
     }
 
     public  void resetRobot() {
-        roboTyper.setMilliseconds(this.millisecondsGap);
-        roboTyper.setTextToType(textToType);
+        typer.setMilliseconds(this.millisecondsGap);
+        typer.setTextToType(textToType);
         resetRobotButtonText();
     }
 
@@ -47,4 +43,5 @@ public class RobotTyperTask extends AbstractRobotTask{
         this.textToType = textToType;
         resetRobot();
     }
+
 }

@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import uk.co.compendiumdev.javafortesters.gui.awtbridge.RobotTyper;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 
 public abstract class AbstractRobotTask {
     Button robotTypeButton;
@@ -69,6 +70,7 @@ public abstract class AbstractRobotTask {
                                             // we are finished
                                             resetRobotButtonText();
                                             cancel();
+                                            robotFinished();
                                             return;
                                         }
                                     }
@@ -106,7 +108,7 @@ public abstract class AbstractRobotTask {
                                 robotTypeButton.setText("Cancelling");
                                 task.cancel();
                                 resetRobotButtonText();
-
+                                robotFinished();
                                 return;
                             }
 
@@ -146,6 +148,15 @@ public abstract class AbstractRobotTask {
         }
     }
 
+    public void robotFinished(){
+        String couldNotType = typer.getCouldNotTypeKeysAsString();
+        if(couldNotType!=null && couldNotType.length()>0){
+            JavaFX.showSimpleErrorAlert("Finished Typing", "Could not type the following keys " + couldNotType + "\nYou may have to configure the shift key modifiers.");
+            JavaFX.sendTextToClipboard(couldNotType);
+            typer.resetCouldNotType();
+        }
+    }
+
     /* specific Robot config */
 
     abstract void robotDoTheWork();
@@ -153,7 +164,5 @@ public abstract class AbstractRobotTask {
 
     abstract public void resetRobotButtonText();
     abstract public void resetRobot();
-
-
 
 }

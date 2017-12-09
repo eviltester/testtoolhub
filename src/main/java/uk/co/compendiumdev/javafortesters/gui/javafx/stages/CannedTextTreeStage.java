@@ -1,23 +1,43 @@
 package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
-import uk.co.compendiumdev.javafortesters.cannedtext.CannedText;
-import uk.co.compendiumdev.javafortesters.cannedtext.CannedTextItem;
-import uk.co.compendiumdev.javafortesters.cannedtext.CannedTextItemTreeFinder;
-import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
-import uk.co.compendiumdev.javafortesters.tree.TreeBranch;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import uk.co.compendiumdev.javafortesters.domain.cannedtext.CannedText;
+import uk.co.compendiumdev.javafortesters.domain.cannedtext.CannedTextItem;
+import uk.co.compendiumdev.javafortesters.domain.cannedtext.CannedTextItemTreeFinder;
+import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
+import uk.co.compendiumdev.javafortesters.domain.tree.TreeBranch;
 
 
 public class CannedTextTreeStage extends Stage {
 
+
+    private static CannedTextTreeStage cannedTextTreeSingletonStage=null;
+
+    public static void singletonActivate() {
+
+        if(cannedTextTreeSingletonStage==null)
+            cannedTextTreeSingletonStage = new CannedTextTreeStage(false);
+
+        cannedTextTreeSingletonStage.show();
+        cannedTextTreeSingletonStage.requestFocus();
+    }
+
+    public static EventHandler<ActionEvent> getActivationEvent() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                CannedTextTreeStage.singletonActivate();
+            }
+        };
+    }
 
     private class TreeKeyValue{
         public String key;
@@ -33,17 +53,6 @@ public class CannedTextTreeStage extends Stage {
         }
     }
 
-
-    private static CannedTextTreeStage cannedTextTreeSingletonStage=null;
-
-    public static void singletonActivate() {
-
-        if(cannedTextTreeSingletonStage==null)
-            cannedTextTreeSingletonStage = new CannedTextTreeStage(false);
-
-        cannedTextTreeSingletonStage.show();
-        cannedTextTreeSingletonStage.requestFocus();
-    }
 
     public CannedTextTreeStage(boolean hidden){
 
@@ -108,10 +117,7 @@ public class CannedTextTreeStage extends Stage {
     }
 
     private void sendToClipboard(String contents) {
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(contents);
-        clipboard.setContent(content);
+        JavaFX.sendTextToClipboard(contents);
     }
 
 

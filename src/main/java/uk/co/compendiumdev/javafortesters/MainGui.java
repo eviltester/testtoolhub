@@ -2,19 +2,18 @@ package uk.co.compendiumdev.javafortesters;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import uk.co.compendiumdev.javafortesters.gui.javafx.stages.*;
+import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 
 
 public class MainGui extends Application{
@@ -25,6 +24,15 @@ public class MainGui extends Application{
     //TODO: string generator to file
     //TODO: Locky
     //TODO: file generator    (binary, text)
+    //TODO: Robot Typer
+    //    - (done 1.3) show any characters we could not type, after typing finished or paused
+    //    - (done 1.3) automatically add the untypeable characters into the clipboard
+    //TODO: Configuration
+    //    - (done 1.3) have a configuration dialog
+    //    - (done 1.3) allow configuration of the shift modifiers from config dialog
+    //    - save shift modifiers from config dialog to a file
+    //    - load shift modifiers from a file automatically
+    //    - load shift modifiers from a file on config dialog
     //TODO: HTML comment Scanner
         // TODO show progress on scanner
         // Fix bugs as it can't parse every page e.g.   http://stackoverflow.com/questions/231051/is-there-a-memory-efficient-replacement-of-java-lang-string
@@ -79,53 +87,32 @@ public class MainGui extends Application{
 
     @Override
     public void start(Stage stage) {
-
-
+        
         BorderPane root = new BorderPane();
         Scene scene = new Scene(root, 400, 100);
-
-
         stage.setOnCloseRequest(exitApplicationHandler());
-
 
         VBox buttonList = new VBox(10);
             HBox buttonsRow1 = new HBox();
+                Button createCounter = JavaFX.button("Counterstrings","Create a CounterString");
+                Button createString = JavaFX.button("Strings","Create different Strings");
+                Button robotTyper =JavaFX.button("Typer","Type Strings Using Robot");
+            buttonsRow1.getChildren().addAll(createCounter, createString, robotTyper);
+            buttonsRow1.setSpacing(10);
 
             HBox buttonsRow2 = new HBox();
+                Button cannedText = JavaFX.button("Canned Text Tree","Send Canned Text to the Clipboard");
+                Button launcher = JavaFX.button("Launch URLs", "Launch URLs defined in config files");
+                Button htmlComments = JavaFX.button("HTML Comments","Find HTML Comments from a URL");
+            buttonsRow2.getChildren().addAll(cannedText, launcher, htmlComments);
+            buttonsRow2.setSpacing(10);
 
-        Button createCounter = new Button();
-        createCounter.setText("Counterstrings");
-        createCounter.setTooltip(new Tooltip("Create a CounterString"));
+            HBox buttonsRow3 = new HBox();
+                Button configEditor = JavaFX.button("Config","Show/Edit Config");
+            buttonsRow3.getChildren().addAll(configEditor);
+            buttonsRow3.setSpacing(10);
 
-        Button createString = new Button();
-        createString.setText("Strings");
-        createString.setTooltip(new Tooltip("Create different Strings"));
-
-        Button robotTyper = new Button();
-        robotTyper.setText("Typer");
-        robotTyper.setTooltip(new Tooltip("Type Strings Using Robot"));
-
-        Button cannedText = new Button();
-        cannedText.setText("Canned Text Tree");
-        cannedText.setTooltip(new Tooltip("Send Canned Text to the Clipboard"));
-
-        Button launcher = new Button();
-        launcher.setText("Launch URLs");
-        launcher.setTooltip(new Tooltip("Launch URLs defined in config files"));
-
-        Button htmlComments = new Button();
-        htmlComments.setText("HTML Comments");
-        htmlComments.setTooltip(new Tooltip("Find HTML Comments from a URL"));
-
-        buttonsRow1.getChildren().addAll(createCounter, createString, robotTyper);
-        buttonsRow1.setSpacing(10);
-
-        buttonsRow2.getChildren().addAll(cannedText, launcher, htmlComments);
-        buttonsRow2.setSpacing(10);
-
-
-
-        buttonList.getChildren().addAll(buttonsRow1, buttonsRow2);
+        buttonList.getChildren().addAll(buttonsRow1, buttonsRow2, buttonsRow3);
 
         root.setCenter(buttonList);
 
@@ -133,57 +120,13 @@ public class MainGui extends Application{
         stage.setScene(scene);
         stage.show();
 
-        createCounter.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                            CounterStringStage.singletonActivate();
-                    }
-                });
-
-
-        createString.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                        StringGeneratorStage.singletonActivate();
-                    }
-                });
-
-        // not yet ready for prime time
-
-        robotTyper.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                        RobotTypeStage.singletonActivate();
-                    }
-                });
-
-
-        cannedText.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                        CannedTextTreeStage.singletonActivate();
-                    }
-                });
-
-        launcher.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                        UrlLauncherGridStage.singletonActivate();
-                    }
-                });
-
-        htmlComments.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent e) {
-                        HtmlCommentsGridStage.singletonActivate();
-                    }
-                });
+        createCounter.setOnAction( CounterStringStage.getActivationEvent() );
+        createString.setOnAction( StringGeneratorStage.getActivationEvent() );
+        robotTyper.setOnAction( RobotTypeStage.getActivationEvent());
+        cannedText.setOnAction( CannedTextTreeStage.getActivationEvent());
+        launcher.setOnAction(UrlLauncherGridStage.getActivationEvent());
+        htmlComments.setOnAction(HtmlCommentsGridStage.getActivationEvent());
+        configEditor.setOnAction(ConfigEditStage.getActivationEvent());
     }
 
     private EventHandler<WindowEvent> exitApplicationHandler() {
@@ -191,13 +134,14 @@ public class MainGui extends Application{
             @Override
             public void handle(WindowEvent event) {
 
+                // TODO: Known bug - if a robot is working then it willissue keypresses that will probably activate the ok button
+                // and the dialog will probably not prompt - could 'pause' the robot prior to dialog
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirm Application Exit");
                 alert.setHeaderText("Are you sure you want to quit the application?");
                 alert.setContentText("Press OK to exit the application. Press Cancel to exit this dialog and keep the application running.");
                 alert.showAndWait().ifPresent(rs -> {
                     if (rs == ButtonType.OK) {
-
 
                         // stop any stages that might have robots running
                         CounterStringStage.stopServices();
@@ -209,11 +153,8 @@ public class MainGui extends Application{
                         event.consume();
                     }
                 });
-
-
             }
         };
-
     }
 
     public static void main(String[] args) {

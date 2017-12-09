@@ -38,6 +38,15 @@ public class RobotTypeStage extends Stage {
         robotTypeStage.requestFocus();
     }
 
+    public static EventHandler<ActionEvent> getActivationEvent() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                RobotTypeStage.singletonActivate();
+            }
+        };
+    }
+
     public RobotTypeStage(boolean hidden) {
 
         BorderPane root = new BorderPane();
@@ -95,6 +104,7 @@ public class RobotTypeStage extends Stage {
                 });
 
     }
+
 
 
 
