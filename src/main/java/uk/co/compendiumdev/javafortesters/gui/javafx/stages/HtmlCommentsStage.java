@@ -12,15 +12,15 @@ import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
 import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.domain.html.comments.HTMLCommentReporter;
 
-public class HtmlCommentsGridStage extends Stage {
+public class HtmlCommentsStage extends Stage {
 
 
-    private static HtmlCommentsGridStage htmlCommentsGridSingletonStage=null;
+    private static HtmlCommentsStage htmlCommentsGridSingletonStage=null;
 
     public static void singletonActivate() {
 
         if(htmlCommentsGridSingletonStage==null)
-            htmlCommentsGridSingletonStage = new HtmlCommentsGridStage(false);
+            htmlCommentsGridSingletonStage = new HtmlCommentsStage(false);
 
         htmlCommentsGridSingletonStage.show();
         htmlCommentsGridSingletonStage.requestFocus();
@@ -30,12 +30,12 @@ public class HtmlCommentsGridStage extends Stage {
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                HtmlCommentsGridStage.singletonActivate();
+                HtmlCommentsStage.singletonActivate();
             }
         };
     }
 
-    public HtmlCommentsGridStage(boolean hidden){
+    public HtmlCommentsStage(boolean hidden){
 
 
         BorderPane root = new BorderPane();

@@ -108,8 +108,9 @@ public class MainGui extends Application{
             buttonsRow2.setSpacing(10);
 
             HBox buttonsRow3 = new HBox();
+                Button binaryChopper = JavaFX.button("Binary Chop","Calculate a Binary Chop");
                 Button configEditor = JavaFX.button("Config","Show/Edit Config");
-            buttonsRow3.getChildren().addAll(configEditor);
+            buttonsRow3.getChildren().addAll(binaryChopper,configEditor);
             buttonsRow3.setSpacing(10);
 
         buttonList.getChildren().addAll(buttonsRow1, buttonsRow2, buttonsRow3);
@@ -125,7 +126,8 @@ public class MainGui extends Application{
         robotTyper.setOnAction( RobotTypeStage.getActivationEvent());
         cannedText.setOnAction( CannedTextTreeStage.getActivationEvent());
         launcher.setOnAction(UrlLauncherGridStage.getActivationEvent());
-        htmlComments.setOnAction(HtmlCommentsGridStage.getActivationEvent());
+        htmlComments.setOnAction(HtmlCommentsStage.getActivationEvent());
+        binaryChopper.setOnAction(BinaryChopifierStage.getActivationEvent());
         configEditor.setOnAction(ConfigEditStage.getActivationEvent());
     }
 
