@@ -1,0 +1,4 @@
+http://eviltester.com
+https://compendiumdev.co.uk
+http://javafortesters.com
+http://seleniumsimplified.com

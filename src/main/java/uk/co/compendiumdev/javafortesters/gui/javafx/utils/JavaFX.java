@@ -35,10 +35,10 @@ public class JavaFX {
         return aTextField;
     }
 
-    public static void alertErrorDialogWithException(Throwable ex) {
+    public static void alertErrorDialogWithException(Throwable ex, String title) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Exception Dialog");
-        alert.setHeaderText(null);
+        alert.setHeaderText(title);
         alert.setContentText(ex.getMessage());
 
         // Create expandable Exception.
@@ -67,6 +67,10 @@ public class JavaFX {
         alert.getDialogPane().setExpandableContent(expContent);
 
         alert.showAndWait();
+
+    }
+    public static void alertErrorDialogWithException(Throwable ex) {
+        alertErrorDialogWithException(ex, "General Exception");
     }
 
     public static void showSimpleErrorAlert(String title, String message) {

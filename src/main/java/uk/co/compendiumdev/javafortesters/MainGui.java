@@ -109,8 +109,9 @@ public class MainGui extends Application{
 
             HBox buttonsRow3 = new HBox();
                 Button binaryChopper = JavaFX.button("Binary Chop","Calculate a Binary Chop");
+                Button httpLinkChecker = JavaFX.button("Link Checker","A Simple LinkChecker");
                 Button configEditor = JavaFX.button("Config","Show/Edit Config");
-            buttonsRow3.getChildren().addAll(binaryChopper,configEditor);
+            buttonsRow3.getChildren().addAll(binaryChopper,httpLinkChecker, configEditor);
             buttonsRow3.setSpacing(10);
 
         buttonList.getChildren().addAll(buttonsRow1, buttonsRow2, buttonsRow3);
@@ -129,6 +130,7 @@ public class MainGui extends Application{
         htmlComments.setOnAction(HtmlCommentsStage.getActivationEvent());
         binaryChopper.setOnAction(BinaryChopifierStage.getActivationEvent());
         configEditor.setOnAction(ConfigEditStage.getActivationEvent());
+        httpLinkChecker.setOnAction(HTTPLinkCheckerGridStage.getActivationEvent());
     }
 
     private EventHandler<WindowEvent> exitApplicationHandler() {
