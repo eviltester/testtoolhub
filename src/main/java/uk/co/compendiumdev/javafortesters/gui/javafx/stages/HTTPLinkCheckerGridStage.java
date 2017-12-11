@@ -1,7 +1,5 @@
 package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -140,23 +138,6 @@ public class HTTPLinkCheckerGridStage extends Stage {
         final TextArea textArea = new TextArea("");
         textArea.setWrapText(true);
 
-        // need to figure out how to update text area as we go
-        StringProperty stringProperty = new SimpleStringProperty();
-        /*
-        stringProperty.addListener(new ChangeListener(){
-
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if (Platform.isFxApplicationThread()) {
-                    textArea.setText((String)observable.getValue());
-                }else{
-                    Platform.runLater(() -> textArea.setText((String)newValue));
-                }
-            }
-        });
-*/
-
-
 
         checkUrlsButton.setOnAction(
                 new EventHandler<ActionEvent>() {
@@ -166,7 +147,7 @@ public class HTTPLinkCheckerGridStage extends Stage {
                             LinkChecker linkChecker = new LinkChecker(defaultLinks);
                             textArea.setText(linkChecker.getReportStateOfLinks());
 
-                            // need to update as we go
+                            // need to update as we go so will need to create a worker/task for this
                             linkChecker.checkLinksReportingAsWeGo();
                             //linkChecker.checkLinksReportingAsWeGo(new JavaFxTextOutputter(stringProperty));
                             textArea.setText(linkChecker.getReportStateOfLinks());
