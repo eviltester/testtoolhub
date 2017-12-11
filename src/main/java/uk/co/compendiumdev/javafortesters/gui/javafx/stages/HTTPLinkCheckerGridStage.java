@@ -2,7 +2,10 @@ package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,14 +16,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import org.junit.Assert;
-import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkChecker;
 import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkQueue;
 import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkQueueFileReader;
 import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkToCheck;
 import uk.co.compendiumdev.javafortesters.domain.launcher.LauncherUrlSet;
 import uk.co.compendiumdev.javafortesters.gui.javafx.Config;
+import uk.co.compendiumdev.javafortesters.gui.javafx.services.LinkCheckerNewTask;
 import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.gui.urllauncher.PhysicalUrlLauncher;
 
@@ -139,24 +143,39 @@ public class HTTPLinkCheckerGridStage extends Stage {
         textArea.setWrapText(true);
 
 
+        // Create the service
+        Service<ObservableList<String>> service = new Service<ObservableList<String>>() {
+            @Override
+            protected Task<ObservableList<String>> createTask() {
+                return new LinkCheckerNewTask(defaultLinks);
+            }
+        };
+
+        //LinkCheckerTask linkCheckerTask = new LinkCheckerTask(checkUrlsButton, defaultLinks, textArea);
+        textArea.textProperty().bind(service.valueProperty().asString());
+        
+        // when close stage, stop the link checking
+        this.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<javafx.event.Event>() {
+            @Override
+            public void handle(Event event) {
+                service.cancel();
+                //linkCheckerTask.stopTheTask();
+            }
+        });
+
+
         checkUrlsButton.setOnAction(
                 new EventHandler<ActionEvent>() {
-                    @Override
                     public void handle(ActionEvent e) {
                         try {
-                            LinkChecker linkChecker = new LinkChecker(defaultLinks);
-                            textArea.setText(linkChecker.getReportStateOfLinks());
-
-                            // need to update as we go so will need to create a worker/task for this
-                            linkChecker.checkLinksReportingAsWeGo();
-                            //linkChecker.checkLinksReportingAsWeGo(new JavaFxTextOutputter(stringProperty));
-                            textArea.setText(linkChecker.getReportStateOfLinks());
+                            service.start();
                         } catch (Exception ex) {
                             JavaFX.alertErrorDialogWithException(ex);
                         }
 
                     }
                 });
+
 
 
 

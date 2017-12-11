@@ -8,21 +8,16 @@ import java.net.URL;
 
 public class LinkChecker {
     private final LinkQueue links;
+    private int currentLinkToCheck;
 
     public LinkChecker(LinkQueue links) {
         this.links = links;
+        currentLinkToCheck = 0;
     }
 
-    public void reportStateOfLinks() {
-
-        System.out.println("Link Checker Report" + System.lineSeparator());
-        System.out.println("-------------------"  + System.lineSeparator());
-
-        for(LinkToCheck aLink : links.queue){
-            System.out.println(String.format("- %s %s %n", aLink.getUrl(), aLink.exists())) ;
-        }
+    public boolean hasLinksToCheck() {
+        return (currentLinkToCheck<links.numberInQueue());
     }
-
 
     public String getReportStateOfLinks() {
 
@@ -103,5 +98,25 @@ public class LinkChecker {
     }
     public void checkLinksReportingAsWeGo() {
         checkLinksReportingAsWeGo(new SystemOutOutputTo());
+    }
+
+
+    public String getAboutToCheckReport() {
+        return String.format("** CHECKING ** %s", getNextLink().getUrl());
+    }
+
+    public String checkNextLink() {
+        LinkToCheck aLink = getNextLink();
+        aLink.setExistsFromStatus(checkLink(aLink.getUrl()));
+        currentLinkToCheck++;
+        return String.format("** RESULT ** %s", aLink.getState());
+    }
+
+    public LinkToCheck getNextLink() {
+        return this.links.queue.get(currentLinkToCheck);
+    }
+
+    public void reset() {
+        currentLinkToCheck=0;
     }
 }
