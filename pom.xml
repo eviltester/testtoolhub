@@ -6,11 +6,10 @@
 
     <groupId>uk.co.compendiumdev</groupId>
     <artifactId>testtoolhub</artifactId>
-	<!-- -SNAPSHOT
-    <version>1.4-SNAPSHOT</version>
-    -->
+	<!-- -SNAPSHOT -->
+    <version>1.5-SNAPSHOT</version>
 
-    <version>1.4</version>
+    <!-- <version>1.5</version> -->
 
     <dependencies>
         <dependency>
