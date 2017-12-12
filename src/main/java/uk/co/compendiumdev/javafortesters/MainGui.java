@@ -150,6 +150,7 @@ public class MainGui extends Application{
                         // stop any stages that might have robots running
                         CounterStringStage.stopServices();
                         RobotTypeStage.stopServices();
+                        HTTPLinkCheckerGridStage.stopServices();
 
                         Platform.exit();
                         System.exit(0);

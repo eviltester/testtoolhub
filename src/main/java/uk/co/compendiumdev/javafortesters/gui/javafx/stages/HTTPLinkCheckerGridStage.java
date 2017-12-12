@@ -1,9 +1,11 @@
 package uk.co.compendiumdev.javafortesters.gui.javafx.stages;
 
+import javafx.beans.binding.When;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -15,10 +17,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import org.junit.Assert;
+import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkChecker;
 import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkQueue;
 import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkQueueFileReader;
 import uk.co.compendiumdev.javafortesters.domain.http.linkchecker.LinkToCheck;
@@ -30,11 +33,15 @@ import uk.co.compendiumdev.javafortesters.gui.urllauncher.PhysicalUrlLauncher;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Optional;
 
 
 public class HTTPLinkCheckerGridStage extends Stage {
 
     private static HTTPLinkCheckerGridStage urlLauncherGridSingletonStage=null;
+    private static Service<ObservableList<String>> service;
+    LinkQueue defaultLinks;
+    LinkChecker linksToCheck;
 
     public static void singletonActivate() {
 
@@ -69,18 +76,28 @@ public class HTTPLinkCheckerGridStage extends Stage {
         fileLoadControl.getChildren().addAll(filename, loadUrlButton);
         fileLoadControl.setSpacing(10);
 
+        VBox urlChecking = new VBox();
         HBox actionButtonsControl = new HBox();
             Button checkUrlsButton = JavaFX.button("Check URLs", "Check all the URLs");
+            Button cancelCheckingUrlsButton = JavaFX.button("Cancel", "Cancel Checking URLs");
             //Button saveUrlReportButton = JavaFX.button("Save URL Report", "Save the URL report to file");
-        actionButtonsControl.getChildren().addAll(checkUrlsButton); //, saveUrlReportButton);
+            Label progressPercentage = new Label("");
+            progressPercentage.setVisible(false);
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.setVisible(false);
+            Label progressMessage = new Label("");
+            progressMessage.setVisible(false);
+            
+        actionButtonsControl.getChildren().addAll(checkUrlsButton, cancelCheckingUrlsButton, progressPercentage, progressBar); //, saveUrlReportButton);
         actionButtonsControl.setSpacing(10);
+        urlChecking.getChildren().addAll(actionButtonsControl, progressMessage);
 
 
         VBox buttonsControl = new VBox();
-        buttonsControl.getChildren().addAll(fileLoadControl, actionButtonsControl);
+        buttonsControl.getChildren().addAll(fileLoadControl, urlChecking);
 
         // get the default data
-        LinkQueue defaultLinks = loadDefaultLinks();
+        defaultLinks = loadDefaultLinks();
 
         //LauncherUrlLoader loader = new LauncherUrlLoader();
         //UrlLauncher urls = loader.load();
@@ -143,31 +160,61 @@ public class HTTPLinkCheckerGridStage extends Stage {
         textArea.setWrapText(true);
 
 
+
+        linksToCheck = new LinkChecker(defaultLinks);
         // Create the service
-        Service<ObservableList<String>> service = new Service<ObservableList<String>>() {
+        service = new Service<ObservableList<String>>() {
             @Override
             protected Task<ObservableList<String>> createTask() {
-                return new LinkCheckerNewTask(defaultLinks);
+                return new LinkCheckerNewTask(linksToCheck);
             }
         };
 
-        //LinkCheckerTask linkCheckerTask = new LinkCheckerTask(checkUrlsButton, defaultLinks, textArea);
         textArea.textProperty().bind(service.valueProperty().asString());
+        progressMessage.textProperty().bind(service.messageProperty());
+        progressPercentage.textProperty().bind(new When(service.progressProperty().isEqualTo(-1))
+                .then("Unknown")
+                .otherwise(service.progressProperty().multiply(100.0)
+                        .asString("%.2f%%")));
+        progressBar.progressProperty().bind(service.progressProperty());
         
         // when close stage, stop the link checking
         this.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<javafx.event.Event>() {
             @Override
             public void handle(Event event) {
-                service.cancel();
-                //linkCheckerTask.stopTheTask();
+                stopServices();
             }
         });
 
+
+        checkUrlsButton.disableProperty().bind(service.stateProperty().isEqualTo(Worker.State.RUNNING));
+        cancelCheckingUrlsButton.disableProperty().bind(service.stateProperty().isNotEqualTo(Worker.State.RUNNING));
+
+
+        cancelCheckingUrlsButton.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent e) {
+                        service.cancel();
+                    }
+                });
 
         checkUrlsButton.setOnAction(
                 new EventHandler<ActionEvent>() {
                     public void handle(ActionEvent e) {
                         try {
+                            service.reset();
+
+                            if(linksToCheck.hasLinksToCheck() && linksToCheck.getCurrentLinkNumber()!=0){
+                                if(!doYouWantToContinue()) {
+                                    linksToCheck.reset();
+                                }
+                            }else{
+                                linksToCheck.reset();
+                            }
+
+                            progressMessage.setVisible(true);
+                            progressPercentage.setVisible(true);
+                            progressBar.setVisible(true);
                             service.start();
                         } catch (Exception ex) {
                             JavaFX.alertErrorDialogWithException(ex);
@@ -177,7 +224,29 @@ public class HTTPLinkCheckerGridStage extends Stage {
                 });
 
 
-
+        Stage currentStage = this;
+        loadUrlButton.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(final ActionEvent e) {
+                        FileChooser fileChooser = new FileChooser();
+                        File file = fileChooser.showOpenDialog(currentStage);
+                        if (file != null) {
+                            if(file.exists()) {
+                                filename.setText(file.getName());
+                                filename.setTooltip(new Tooltip(file.getAbsolutePath()));
+                                LinkQueue links = loadLinks(file);
+                                if(links.numberInQueue()>0){
+                                    defaultLinks.getLinks().clear();
+                                    defaultLinks.getLinks().addAll(links.getLinks());
+                                    urlsToCheck.clear();
+                                    urlsToCheck.addAll(defaultLinks.getLinks());
+                                    linksToCheck.replaceLinks(defaultLinks);
+                                }
+                            }
+                        }
+                    }
+                });
 
             HBox form = new HBox();
             form.getChildren().addAll(leftside, textArea);
@@ -200,6 +269,23 @@ public class HTTPLinkCheckerGridStage extends Stage {
 
         }
 
+    private boolean doYouWantToContinue() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Continue Checking?");
+        alert.setHeaderText("You have checked " + linksToCheck.getCurrentLinkNumber() + " links " +
+                            "out of " + linksToCheck.getNumberInQueue() + ". \n" +
+                            "Do you want to continue from where you left off, \n"+
+                            "or do you want to start again?");
+        alert.setContentText("Continue? Or Restart to start again.");
+
+        ButtonType bContinue = new ButtonType("Continue");
+        ButtonType bRestart  = new ButtonType("Restart");
+
+        alert.getButtonTypes().setAll(bContinue, bRestart);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.get() == bContinue;
+    }
+
     private LinkQueue loadDefaultLinks() {
         LinkQueue links = new LinkQueue();
 
@@ -212,11 +298,10 @@ public class HTTPLinkCheckerGridStage extends Stage {
 
             linkQueueFile = new File(fileToRead.toURI());
 
-            Assert.assertNotNull(linkQueueFile);
-
-            LinkQueueFileReader fileReader = new LinkQueueFileReader(linkQueueFile);
-
-            links = fileReader.getQueue();
+            if(linkQueueFile!=null) {
+                LinkQueueFileReader fileReader = new LinkQueueFileReader(linkQueueFile);
+                links = fileReader.getQueue();
+            }
 
         }catch(Exception e){
             JavaFX.alertErrorDialogWithException(e, "Error Loading Default Resource File " + filenameForResource);
@@ -225,4 +310,27 @@ public class HTTPLinkCheckerGridStage extends Stage {
         return links;
     }
 
+    private LinkQueue loadLinks(File linkQueueFile) {
+        LinkQueue links = new LinkQueue();
+
+        try {
+
+            if(linkQueueFile!=null) {
+                LinkQueueFileReader fileReader = new LinkQueueFileReader(linkQueueFile);
+                links = fileReader.getQueue();
+            }
+
+        }catch(Exception e){
+            JavaFX.alertErrorDialogWithException(e, "Error Loading File " + linkQueueFile.getAbsolutePath());
+        }
+
+        return links;
+    }
+
+    public static void stopServices() {
+        if(service!=null){
+            if(service.getState()== Worker.State.RUNNING)
+                service.cancel();
+        }
+    }
 }

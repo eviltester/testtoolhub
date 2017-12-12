@@ -1,6 +1,8 @@
 package uk.co.compendiumdev.javafortesters.domain.http.linkchecker;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class LinkQueueFileReader {
 
@@ -15,7 +17,13 @@ public class LinkQueueFileReader {
 
             String aURL = fileReader.readLine();
             while(aURL!=null){
-                queue.add(aURL);
+                try{
+                    URL anActualURL = new URL(aURL);
+                    queue.add(aURL);
+                }catch(MalformedURLException e){
+                    System.out.println("Ignoring non-url line");
+                    System.out.println(aURL);
+                }
                 aURL = fileReader.readLine();
             }
 

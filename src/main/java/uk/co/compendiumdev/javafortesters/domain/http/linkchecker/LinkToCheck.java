@@ -52,4 +52,8 @@ public class LinkToCheck {
     public String getState() {
         return exists_state;
     }
+
+    public void setUnknown() {
+        this.exists_state = STATE_UNKNOWN;
+    }
 }

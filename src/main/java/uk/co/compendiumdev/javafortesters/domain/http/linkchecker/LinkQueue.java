@@ -24,4 +24,12 @@ public class LinkQueue {
     public Collection<LinkToCheck> getLinks() {
         return queue;
     }
+
+    public void resetStates() {
+
+        for(LinkToCheck link : queue){
+            link.setUnknown();
+        }
+
+    }
 }

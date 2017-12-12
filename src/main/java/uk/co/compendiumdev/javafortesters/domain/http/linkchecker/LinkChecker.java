@@ -117,6 +117,23 @@ public class LinkChecker {
     }
 
     public void reset() {
+        links.resetStates();
+        currentLinkToCheck=0;
+    }
+
+    public int getNumberInQueue() {
+        return links.numberInQueue();
+    }
+
+    public int getCurrentLinkNumber() {
+        return currentLinkToCheck;
+    }
+
+    public void replaceLinks(LinkQueue defaultLinks) {
+        if( defaultLinks!=links) {
+            links.getLinks().clear();
+            links.getLinks().addAll(defaultLinks.getLinks());
+        }
         currentLinkToCheck=0;
     }
 }
