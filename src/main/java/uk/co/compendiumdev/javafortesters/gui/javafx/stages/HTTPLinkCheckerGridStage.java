@@ -32,7 +32,7 @@ import uk.co.compendiumdev.javafortesters.gui.javafx.utils.JavaFX;
 import uk.co.compendiumdev.javafortesters.gui.urllauncher.PhysicalUrlLauncher;
 
 import java.io.File;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.Optional;
 
 
@@ -293,13 +293,10 @@ public class HTTPLinkCheckerGridStage extends Stage {
 
         try {
 
-            URL fileToRead = HTTPLinkCheckerGridStage.class.getResource(filenameForResource);
-            File linkQueueFile;
+            InputStream fileToRead = HTTPLinkCheckerGridStage.class.getResourceAsStream(filenameForResource);
 
-            linkQueueFile = new File(fileToRead.toURI());
-
-            if(linkQueueFile!=null) {
-                LinkQueueFileReader fileReader = new LinkQueueFileReader(linkQueueFile);
+            if(fileToRead!=null) {
+                LinkQueueFileReader fileReader = new LinkQueueFileReader(fileToRead, "Resource: " + filenameForResource);
                 links = fileReader.getQueue();
             }
 

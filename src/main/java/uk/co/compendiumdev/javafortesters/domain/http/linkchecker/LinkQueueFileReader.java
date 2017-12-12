@@ -15,7 +15,25 @@ public class LinkQueueFileReader {
         try {
             BufferedReader fileReader = new BufferedReader(new FileReader(linkQueueFile));
 
-            String aURL = fileReader.readLine();
+            readBufferedReaderAsLinkQueue(fileReader, linkQueueFile.getAbsolutePath());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Something went wrong reading file " + linkQueueFile.getAbsolutePath());
+        }
+    }
+
+    public LinkQueueFileReader(InputStream fileToRead, String fileName) {
+
+        queue = new LinkQueue();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fileToRead));
+        readBufferedReaderAsLinkQueue(reader, fileName);
+    }
+
+    private void readBufferedReaderAsLinkQueue(BufferedReader reader, String fileName) {
+        try{
+            String aURL = reader.readLine();
             while(aURL!=null){
                 try{
                     URL anActualURL = new URL(aURL);
@@ -24,15 +42,15 @@ public class LinkQueueFileReader {
                     System.out.println("Ignoring non-url line");
                     System.out.println(aURL);
                 }
-                aURL = fileReader.readLine();
+                aURL = reader.readLine();
             }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("Something went wrong creating reader for file " + linkQueueFile.getAbsolutePath());
+            System.out.println("Something went wrong creating reader for file " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Something went wrong reading file " + linkQueueFile.getAbsolutePath());
+            System.out.println("Something went wrong reading file " + fileName);
         }
     }
 
