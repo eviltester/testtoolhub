@@ -13,7 +13,10 @@ public class Config {
 
     // string of paired characters, first is the 'wanted' char, next is the 'shifted' char
     // escaped modifier in string representation are at the end
-    private static String defaultShiftModifiers = "~`!1@2£3$4%5^6&7*8(9)0_-+={[}]:;<,>.?/" + '"' + "'" + "|" + '\\';
+    private static String defaultShiftModifiers = "~`!1@2$4%5^6&7*8(9)0_-+={[}]:;<,>.?/" + '"' + "'" + "|" + '\\';
+
+    // £3
+    // had to take £ out of the above as it failed when added to the default config
 
     public static String currentShiftModifiers = defaultShiftModifiers;
 
