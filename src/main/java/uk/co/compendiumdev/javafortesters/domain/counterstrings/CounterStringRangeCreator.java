@@ -22,11 +22,6 @@ public class CounterStringRangeCreator {
         int maxNumberOfDigits = getLengthOfFinalCounterInString(lengthOfCounterString, theSpacer);
 
 
-        // arrays to create the maximum and minimum numbers for the digit ranges
-        // we ignore 0 because no number has 0 digits
-//        int[] maxNumberForDigits = new int[maxNumberOfDigits+1]; // ignore 0 indexing
-//        int[] minNumberForDigits = new int[maxNumberOfDigits+1];
-
         int lengthOfNumberInString = maxNumberOfDigits;
 
         int highestNextNumberOfDigitsNumberIs=lengthOfCounterString;
@@ -56,11 +51,9 @@ public class CounterStringRangeCreator {
 
             highestNextNumberOfDigitsNumberIs = lowestXCharNumberIs - lengthOfNumberInString;
 
-            // add directly into the list rather than collate in an array
+            // TODO: consider using a STACK rather than a list where we keep adding at the front of the list
             ranges.add(0, new CounterStringRangeStruct(lengthOfNumberInString, lowestXCharNumberIs, maxNumberWithXDigits));
 
-//            maxNumberForDigits[lengthOfNumberInString] = maxNumberWithXDigits;
-//            minNumberForDigits[lengthOfNumberInString] = lowestXCharNumberIs;
             lengthOfNumberInString--;
 
 
@@ -70,29 +63,17 @@ public class CounterStringRangeCreator {
 
         // for numbers 1-9, if we started with more than one digit number
         if(lengthOfCounterString>9) {
-            //maxNumberForDigits[lengthOfNumberInString] = highestNextNumberOfDigitsNumberIs;
             int minimumNumberIs=1;
 
             if ((highestNextNumberOfDigitsNumberIs % 2) == 1) { // odd
-//                minNumberForDigits[lengthOfNumberInString] = 1;
                 minimumNumberIs=1;
             } else {
-//                minNumberForDigits[lengthOfNumberInString] = 2;
                 minimumNumberIs=2;
             }
 
             ranges.add(0, new CounterStringRangeStruct(lengthOfNumberInString, minimumNumberIs, highestNextNumberOfDigitsNumberIs));
         }
 
-        // tidy up the array of ranges into a list
-
-//        List<CounterStringRangeStruct> ranges2 = new ArrayList<CounterStringRangeStruct>();
-//        for (int x = 2; x <= maxNumberOfDigits; x++) {
-//            int minX = minNumberForDigits[x];
-//            int maxX = maxNumberForDigits[x];
-//            int space = x;
-//            ranges2.add(new CounterStringRangeStruct(space, minX, maxX));
-//        }
 
         return ranges;
     }
