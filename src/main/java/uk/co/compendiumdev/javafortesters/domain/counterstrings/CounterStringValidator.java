@@ -7,20 +7,38 @@ public class CounterStringValidator {
         this.counterString = counterString;
     }
 
-    // a very crude algorithm, can be easily fooled e.g. 1*******
     public boolean isValid() {
 
         String[] values = counterString.split("\\*");
 
+        boolean firstOnly = true;
+
+        if(values.length==0){
+            return false;
+        }
+
         for(String position : values){
-            int positionVal = 0;
+            int positionVal = -1;
             if(position.length()>0){
                 positionVal=Integer.parseInt(position);
                 positionVal = positionVal-1;
+            }else{
+                // when first char is an * then check the first char
+                if(firstOnly){
+                    positionVal=0;
+                }
             }
-            if(counterString.charAt(positionVal)!='*'){
+            firstOnly=false;
+
+            try {
+                if (counterString.charAt(positionVal) != '*') {
+                    System.out.println("Error validating: " + counterString);
+                    System.out.println("Position " + position + " is not a delimter it is " + counterString.charAt(positionVal));
+                    return false;
+                }
+            }catch(Exception e){
                 System.out.println("Error validating: " + counterString);
-                System.out.println("Position " + position + " is not a delimter it is " + counterString.charAt(positionVal));
+                e.printStackTrace();
                 return false;
             }
         }

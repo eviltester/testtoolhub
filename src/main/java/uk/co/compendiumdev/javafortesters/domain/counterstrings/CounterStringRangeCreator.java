@@ -45,19 +45,6 @@ public class CounterStringRangeCreator {
         } while (lengthOfNumberInString > 1);
 
 
-//        // for numbers 1-9, if we started with more than one digit number
-//        if(lengthOfCounterString>9) {
-//            int minimumNumberIs=1;
-//
-//            if ((highestNextNumberOfDigitsNumberIs % 2) == 1) { // odd
-//                minimumNumberIs=1;
-//            } else {
-//                minimumNumberIs=2;
-//            }
-//
-//            ranges.add(0, new CounterStringRangeStruct(lengthOfNumberInString, minimumNumberIs, highestNextNumberOfDigitsNumberIs));
-//        }
-
 
         return ranges;
     }
