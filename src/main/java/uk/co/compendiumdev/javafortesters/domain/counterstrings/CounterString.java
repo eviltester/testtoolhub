@@ -106,6 +106,8 @@ public class CounterString {
         return "*";
     }
 
+    // TODO: rather than use a StringBuilder use a CounterStringBuilder and add to that - then the CounterStringBuilder could be writing to a file in parallel, or writing straight to console etc.
+
     public String create(int lengthOfCounterString, String limiter) throws CounterStringCreationError {
 
         String theSpacer = getSingleCharSpacer(limiter);
@@ -129,7 +131,9 @@ public class CounterString {
 
 
         }catch(OutOfMemoryError e){
+            e.printStackTrace();
             throw new CounterStringCreationError("Sorry, OutOfMemory error creating string to memory, probably heap space, close down the app and try with a smaller length", null);
+
         }
 
         return theCounterString.toString();
@@ -148,81 +152,11 @@ public class CounterString {
 
     public List<CounterStringRangeStruct> createCounterStringRangesFor(int lengthOfCounterString, String limiter) {
 
-        String theSpacer = getSingleCharSpacer(limiter);
+        return new CounterStringRangeCreator(lengthOfCounterString, limiter).getListOfRangeStructs();
 
-        List<CounterStringRangeStruct> ranges = new ArrayList<CounterStringRangeStruct>();
-
-        int maxNumberOfDigits = getLengthOfFinalCounterInString(lengthOfCounterString, theSpacer);
-
-
-        // arrays to create the maximum and minimum numbers for the digit ranges
-        // we ignore 0 because no number has 0 digits
-        int[] maxNumberForDigits = new int[maxNumberOfDigits+1]; // ignore 0 indexing
-        int[] minNumberForDigits = new int[maxNumberOfDigits+1];
-
-        int lengthOfNumberInString = maxNumberOfDigits;
-
-        int highestNextNumberOfDigitsNumberIs=lengthOfCounterString;
-
-
-        do {
-            int maxNumberWithXDigits = highestNextNumberOfDigitsNumberIs;
-            int numberHasXChars = String.valueOf(maxNumberWithXDigits).length();
-
-            // length - lowest x digit number
-            int differenceOfThisDigitValues = maxNumberWithXDigits - (int) Math.pow(10, (numberHasXChars - 1));
-            int numberOfThisDigitValues = differenceOfThisDigitValues / lengthOfNumberInString;
-            numberOfThisDigitValues++;
-
-            int lowestXCharNumberIs = maxNumberWithXDigits - (lengthOfNumberInString * numberOfThisDigitValues);
-            if(lowestXCharNumberIs==0){
-                // if it is 0 then it is really 2 because we can't have 0 as the lowest number
-                lowestXCharNumberIs=2;
-            }
-
-            int lengthOfLowestAsCounterString = (String.valueOf(lowestXCharNumberIs) + theSpacer).length();
-
-            if (lengthOfLowestAsCounterString != lengthOfNumberInString) {
-                //it is not an X char number so next X char number is lowest + lengthOfNumberInString
-                lowestXCharNumberIs = lowestXCharNumberIs + lengthOfNumberInString;
-            }
-
-            highestNextNumberOfDigitsNumberIs = lowestXCharNumberIs - lengthOfNumberInString;
-
-            maxNumberForDigits[lengthOfNumberInString] = maxNumberWithXDigits;
-            minNumberForDigits[lengthOfNumberInString] = lowestXCharNumberIs;
-            lengthOfNumberInString--;
-
-        } while (lengthOfNumberInString > 2);
-
-
-        // for numbers 1-9, if we started with more than one digit number
-        if(lengthOfCounterString>9) {
-            maxNumberForDigits[lengthOfNumberInString] = highestNextNumberOfDigitsNumberIs;
-
-            if ((highestNextNumberOfDigitsNumberIs % 2) == 1) { // odd
-                minNumberForDigits[lengthOfNumberInString] = 1;
-            } else {
-                minNumberForDigits[lengthOfNumberInString] = 2;
-            }
-        }
-
-        // tidy up the array of ranges into a list
-
-        for (int x = 2; x <= maxNumberOfDigits; x++) {
-            int minX = minNumberForDigits[x];
-            int maxX = maxNumberForDigits[x];
-            int space = x;
-            ranges.add(new CounterStringRangeStruct(space, minX, maxX));
-        }
-
-        return ranges;
     }
 
 
 
-    private int getLengthOfFinalCounterInString(int valueOfLastCounter, String theSpacer) {
-        String numberOfDigitsExample = String.valueOf(valueOfLastCounter) + theSpacer;
-        return numberOfDigitsExample.length();
-    }
+
 }

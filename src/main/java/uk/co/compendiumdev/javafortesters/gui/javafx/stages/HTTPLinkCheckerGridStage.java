@@ -135,8 +135,8 @@ public class HTTPLinkCheckerGridStage extends Stage {
                     @Override
                     public void handle(MouseEvent event) {
                         if (event.getClickCount() > 1) {
-                            // double click open URL
-                            LinkToCheck rowData = (LinkToCheck) cell.getTableRow().getItem();
+                            // double click open URL - TODO investigation compilation problem with getITem()
+                            LinkToCheck rowData = (LinkToCheck) cell.getTableRow().getItem().getUrls();
                             PhysicalUrlLauncher.launch(rowData.getUrl());
                         }else {
                             // single click ignore

@@ -144,7 +144,8 @@ public class UrlLauncherGridStage  extends Stage {
                     @Override
                     public void handle(MouseEvent event) {
                         if (event.getClickCount() > 1) {
-                            LauncherUrl rowData = (LauncherUrl) cell.getTableRow().getItem();
+                            // TODO investigate compilation problem
+                            LauncherUrl rowData = (LauncherUrl) cell.getTableRow().getItem().getUrls();
                             PhysicalUrlLauncher.launch(rowData.getUrl());
                         }
                     }
