@@ -1,6 +1,8 @@
 package uk.co.compendiumdev.javafortesters.domain.counterstrings;
 
-import java.util.ArrayList;
+import uk.co.compendiumdev.javafortesters.domain.counterstrings.Creators.CounterStringCreator;
+import uk.co.compendiumdev.javafortesters.domain.counterstrings.Creators.StringCounterStringCreator;
+
 import java.util.List;
 
 /**
@@ -95,36 +97,24 @@ public class CounterString {
         return create(length,"*");
     }
 
-    public String getSingleCharSpacer(String limiter){
-        // if we have been given a limiter then use the first character of it
-        if(limiter!=null){
-            if(limiter.length()>0) {
-                return limiter.substring(0, 1);
-            }
-        }
-
-        return "*";
-    }
-
-    // TODO: rather than use a StringBuilder use a CounterStringBuilder and add to that - then the CounterStringBuilder could be writing to a file in parallel, or writing straight to console etc.
-
     public String create(int lengthOfCounterString, String limiter) throws CounterStringCreationError {
 
+        return createWith(lengthOfCounterString, limiter, new StringCounterStringCreator()).toString();
+
+    }
+
+    public CounterStringCreator createWith(int lengthOfCounterString, String limiter, CounterStringCreator creator) throws CounterStringCreationError {
         String theSpacer = getSingleCharSpacer(limiter);
 
-        StringBuilder theCounterString = new StringBuilder();
         List<CounterStringRangeStruct> ranges = createCounterStringRangesFor(lengthOfCounterString, theSpacer);
 
         try {
-
-            // we know the size, so we could output to a a char array
-
 
             // iterate through the ranges to build the string
             for(CounterStringRangeStruct range : ranges){
                 CounterStringRangeIterator ranger = new CounterStringRangeIterator(range);
                 while(ranger.hasAnotherValueInRange()){
-                    theCounterString.append(getCounterStringRepresentationOfNumber(ranger.getNextValueFromRange(), theSpacer));
+                    creator.append(getCounterStringRepresentationOfNumber(ranger.getNextValueFromRange(), theSpacer));
                 }
 
             }
@@ -136,8 +126,20 @@ public class CounterString {
 
         }
 
-        return theCounterString.toString();
+        return creator;
     }
+
+    public String getSingleCharSpacer(String limiter){
+        // if we have been given a limiter then use the first character of it
+        if(limiter!=null){
+            if(limiter.length()>0) {
+                return limiter.substring(0, 1);
+            }
+        }
+
+        return "*";
+    }
+
 
     public String getCounterStringRepresentationOfNumber(int outX, String theSpacer) {
         // if we are outputting the number 1 then output just the spacer
@@ -148,14 +150,12 @@ public class CounterString {
         return String.valueOf(outX) + theSpacer;
     }
 
-    // todo refactor below into CounterStringRangeCreator
 
     public List<CounterStringRangeStruct> createCounterStringRangesFor(int lengthOfCounterString, String limiter) {
 
         return new CounterStringRangeCreator(lengthOfCounterString, limiter).getListOfRangeStructs();
 
     }
-
 
 
 
