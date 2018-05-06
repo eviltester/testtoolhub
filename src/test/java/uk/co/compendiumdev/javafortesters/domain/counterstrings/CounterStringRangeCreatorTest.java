@@ -37,4 +37,10 @@ public class CounterStringRangeCreatorTest {
         Assert.assertEquals(2, ranges.get(0).minValInRange);
 
     }
+
+    @Test
+    public void canCalculateFourCharacterDisplayDigitRange(){
+        List<CounterStringRangeStruct> ranges = new CounterStringRangeCreator(125, "*").getListOfRangeStructs();
+
+    }
 }

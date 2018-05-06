@@ -114,6 +114,8 @@ public class CounterstringCreationTest {
             Assert.assertTrue(cslen + "* should be the last strings", cs.endsWith(cslen + "*"));
             Assert.assertTrue(cslen + " should be the length", cs.length()==cslen);
             cslen += csinc;
+
+            Assert.assertTrue(new CounterStringValidator(cs).isValid());
         }
     }
 
@@ -125,6 +127,18 @@ public class CounterstringCreationTest {
             System.out.println(cs);
             Assert.assertTrue(cs.endsWith(x + "*"));
             Assert.assertTrue(cs.length()==x);
+            Assert.assertTrue(new CounterStringValidator(cs).isValid());
+        }
+    }
+
+    @Test
+    public void nonVisibleCheck() throws CounterStringCreationError {
+
+        for(int x=2;x<3990;x++){
+            String cs = new CounterString().create(x);
+            Assert.assertTrue(cs.endsWith(x + "*"));
+            Assert.assertTrue(cs.length()==x);
+            Assert.assertTrue(new CounterStringValidator(cs).isValid());
         }
     }
 
