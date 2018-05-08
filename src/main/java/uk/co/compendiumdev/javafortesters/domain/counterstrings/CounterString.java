@@ -116,9 +116,8 @@ public class CounterString {
                 while(ranger.hasAnotherValueInRange()){
                     creator.append(getCounterStringRepresentationOfNumber(ranger.getNextValueFromRange(), theSpacer));
                 }
-
             }
-
+            creator.finished();
 
         }catch(OutOfMemoryError e){
             e.printStackTrace();
