@@ -80,7 +80,7 @@ Generate a string from ascii value `First Value:` to `Second Value:`.
 
 I say 'ascii value' but of course I mean unicode character.
 
-e.g. http://www.ascii-code.com/ , http://unicode-table.com/en/
+e.g. http://www.ascii-code.com/ , https://symbl.cc/en/
 
 so 48 to 57 would give "0123456789"
 
